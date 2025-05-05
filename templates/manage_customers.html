@@ -18,203 +18,206 @@
     </style>
 </head>
 <body>
-           <!-- 🏗 MENU ĐIỀU HƯỚNG -->
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-<div class="container-fluid mt-4">
-    <h2 class="text-center fw-bold">Quản Lý Khách Hàng</h2>
-    <div class="table-container">
-        <div class="d-flex justify-content-between mb-3">
-            <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập số điện thoại để tìm kiếm...">
-            <button class="btn btn-primary" onclick="searchCustomers()">🔍 Tìm kiếm</button>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="openAddPopup()">+ Thêm khách hàng</button>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered text-center">
-                <thead class="bg-primary text-white">
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên</th>
-                        <th>Số điện thoại</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody id="customerTable"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-
-           <!--POP UP THÊM/SỬA  -->
-
-<div class="modal fade" id="customerModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Thêm khách hàng</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- 🏗 MENU ĐIỀU HƯỚNG -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
+                    </li>
+                </ul>
             </div>
-            <div class="modal-body">
-                <input type="hidden" id="customerId">               <!-- ẨN ID ĐI -->
+        </div>
+    </nav>
 
-                <label>Tên:</label>
-                <input type="text" id="name" class="form-control mb-2">
-                <label>Số điện thoại:</label>
-                <input type="text" id="phone" class="form-control mb-2">
+    <div class="container-fluid mt-4">
+        <h2 class="text-center fw-bold">Quản Lý Khách Hàng</h2>
+        <div class="table-container">
+            <div class="d-flex justify-content-between mb-3">
+                <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập tên hoặc số điện thoại để tìm kiếm...">
+                <div>
+                    <button class="btn btn-primary me-2" onclick="searchCustomers()">🔍 Tìm kiếm</button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="openAddPopup()">+ Thêm khách hàng</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="saveCustomer()">Lưu</button>
+            <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTable"></tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
 
-                      <!--POP UP XÁC NHẬN XÓA -->
-
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Xác nhận xóa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Bạn có chắc chắn muốn xóa khách hàng này không?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+    <!-- POP UP THÊM/SỬA -->
+    <div class="modal fade" id="customerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Thêm khách hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="customerId">
+                    <label>Tên:</label>
+                    <input type="text" id="name" class="form-control mb-2">
+                    <label>Số điện thoại:</label>
+                    <input type="text" id="phone" class="form-control mb-2">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCustomer()">Lưu</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- POP UP XÁC NHẬN XÓA -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa khách hàng này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", loadCustomers);
 
-
-<script>
-    document.addEventListener("DOMContentLoaded", loadCustomers);
-
-    function loadCustomers() {
-        fetch("/customers")
-            .then(response => response.json())
-            .then(data => renderTable(data));
-    }
-
-    function renderTable(data) {
-        let tableBody = document.getElementById("customerTable");
-        tableBody.innerHTML = "";
-        data.forEach(customer => {
-            tableBody.innerHTML += `<tr>
-                <td>${customer.id}</td>
-                <td>${customer.name}</td>
-                <td>${customer.phone}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(customer)})'>✏️ Sửa</button>
-                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(${customer.id})">🗑️ Xóa</button>
-                </td>
-            </tr>`;
-        });
-    }
-
-    function searchCustomers() {
-        let keyword = document.getElementById("searchInput").value;
-        fetch(`/search_customer/${keyword}`)
-            .then(response => response.json())
-            .then(data => renderTable(data))
-            .catch(() => alert("Không tìm thấy khách hàng!"));
-    }
-
-    function openAddPopup() {
-        document.getElementById("modalTitle").innerText = "Thêm khách hàng";
-        document.getElementById("customerId").value = "";
-        document.getElementById("name").value = "";
-        document.getElementById("phone").value = "";
-    }
-
-    function openEditPopup(customer) {
-        document.getElementById("modalTitle").innerText = "Sửa khách hàng";
-        document.getElementById("customerId").value = customer.id;
-        document.getElementById("name").value = customer.name;
-        document.getElementById("phone").value = customer.phone;
-        new bootstrap.Modal(document.getElementById('customerModal')).show();
-    }
-
-    function saveCustomer() {
-        let id = document.getElementById("customerId").value;
-        let name = document.getElementById("name").value;
-        let phone = document.getElementById("phone").value;
-        let data = { name, phone };
-
-        let url = id ? `/update_customer/${id}` : "/add_customer";
-        let method = id ? "PUT" : "POST";
-
-        fetch(url, {
-            method: method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        })
-        .then(() => {
-            loadCustomers();
-            bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
-        });
-    }
-
-    function confirmDelete(id) {
-        if (confirm("Bạn có chắc chắn muốn xóa khách hàng này không?")) {
-            deleteCustomer(id);
+        function loadCustomers() {
+            fetch("/customers")
+                .then(response => response.json())
+                .then(data => renderTable(data))
+                .catch(() => alert("Lỗi khi tải danh sách khách hàng!"));
         }
-    }
 
-    function deleteCustomer(id) {
-        fetch(`/delete_customer/${id}`, { method: "DELETE" })
-            .then(() => loadCustomers());
-    }
-
-
-
-
-    let deleteId = null; // Biến lưu ID khách hàng cần xóa
-
-    function confirmDelete(id) {
-        deleteId = id; // Lưu ID để sử dụng khi nhấn nút "Xóa"
-        new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show(); // Hiện modal
-    }
-
-    // Khi nhấn nút "Xóa" trong modal
-    document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
-        if (deleteId !== null) {
-            deleteCustomer(deleteId);
-            deleteId = null; // Reset ID sau khi xóa
-            bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide(); // Ẩn modal
+        function renderTable(data) {
+            let tableBody = document.getElementById("customerTable");
+            tableBody.innerHTML = "";
+            if (data.message) {
+                tableBody.innerHTML = `<tr><td colspan="4" class="text-center">${data.message}</td></tr>`;
+                return;
+            }
+            data.forEach(customer => {
+                tableBody.innerHTML += `<tr>
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.phone}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(customer)})'>✏️ Sửa</button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(${customer.id})">🗑️ Xóa</button>
+                    </td>
+                </tr>`;
+            });
         }
-    });
 
-</script>
+        function searchCustomers() {
+            let query = document.getElementById("searchInput").value.trim();
+            if (!query) {
+                loadCustomers(); // Tải lại toàn bộ danh sách nếu query rỗng
+                return;
+            }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            fetch(`/search_customer?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => renderTable(data))
+                .catch(() => alert("Không tìm thấy khách hàng!"));
+        }
+
+        function openAddPopup() {
+            document.getElementById("modalTitle").innerText = "Thêm khách hàng";
+            document.getElementById("customerId").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("phone").value = "";
+        }
+
+        function openEditPopup(customer) {
+            document.getElementById("modalTitle").innerText = "Sửa khách hàng";
+            document.getElementById("customerId").value = customer.id;
+            document.getElementById("name").value = customer.name;
+            document.getElementById("phone").value = customer.phone;
+            new bootstrap.Modal(document.getElementById('customerModal')).show();
+        }
+
+        function saveCustomer() {
+            let id = document.getElementById("customerId").value;
+            let name = document.getElementById("name").value.trim();
+            let phone = document.getElementById("phone").value.trim();
+            if (!name || !phone) {
+                alert("Vui lòng nhập đầy đủ tên và số điện thoại!");
+                return;
+            }
+
+            let data = { name, phone };
+            let url = id ? `/update_customer/${id}` : "/add_customer";
+            let method = id ? "PUT" : "POST";
+
+            fetch(url, {
+                method: method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Lỗi khi lưu khách hàng!");
+                    loadCustomers();
+                    bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
+                })
+                .catch(() => alert("Lỗi khi lưu khách hàng!"));
+        }
+
+        let deleteId = null;
+
+        function confirmDelete(id) {
+            deleteId = id;
+            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+        }
+
+        function deleteCustomer(id) {
+            fetch(`/delete_customer/${id}`, { method: "DELETE" })
+                .then(response => {
+                    if (!response.ok) throw new Error("Lỗi khi xóa khách hàng!");
+                    loadCustomers();
+                })
+                .catch(() => alert("Lỗi khi xóa khách hàng!"));
+        }
+
+        document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
+            if (deleteId !== null) {
+                deleteCustomer(deleteId);
+                deleteId = null;
+                bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

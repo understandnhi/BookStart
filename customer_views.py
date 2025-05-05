@@ -27,10 +27,17 @@ def get_customer(id):
     return jsonify({'id': customer.id, 'name': customer.name, 'phone': customer.phone})
 
 
-# API tìm kiếm khách hàng theo số điện thoại
-@customer_views.route('/search_customer/<string:phone>', methods=['GET'])
-def search_customer(phone):
-    customers = Customer.query.filter(Customer.phone.contains(phone)).all()
+# API tìm kiếm khách hàng theo tên hoặc số điện thoại
+@customer_views.route('/search_customer', methods=['GET'])
+def search_customer():
+    query = request.args.get('query', '').strip()
+    if not query:
+        return jsonify({'message': 'Vui lòng nhập tên hoặc số điện thoại để tìm kiếm!'}), 400
+
+    customers = Customer.query.filter(
+        (Customer.name.ilike(f'%{query}%')) | (Customer.phone.ilike(f'%{query}%'))
+    ).all()
+
     if customers:
         return jsonify([{'id': c.id, 'name': c.name, 'phone': c.phone} for c in customers])
     return jsonify({'message': 'Không tìm thấy khách hàng!'}), 404
