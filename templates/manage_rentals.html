@@ -119,18 +119,20 @@
 
 <!-- JavaScript xử lý -->
 <script>
+    // Hàm render danh sách đơn thuê
+    function renderRentals(data) {
+        let html = '';
+        data.forEach(r => {
+            if (r.total_price > 0) {
+                // Định dạng thời gian theo kiểu 15:16 5/5/2025
+                const rentalDate = formatDateTime(r.rental_date);
+                const returnDate = r.return_date ? formatDateTime(r.return_date) : '-';
 
-    // Tìm đơn thuê theo số điện thoại
-    $('#search_rentals').click(function () {
-        let phone = $('#search_phone').val();
-        $.get('/rentals/search?phone=' + phone, function (data) {
-            let html = '';
-            data.forEach(r => {
                 html += `
                     <tr>
                         <td>${r.id}</td>
                         <td>${r.customer_name}</td>
-                        <td>${r.rental_date}</td>
+                        <td>${rentalDate}</td>
                         <td>
                             <select class="form-select form-select-sm status-select" data-id="${r.id}">
                                 <option value="active" ${r.status === 'active' ? 'selected' : ''}>Active</option>
@@ -144,8 +146,37 @@
                             </button>
                         </td>
                     </tr>`;
-            });
-            $('#rental_list').html(html);
+            }
+        });
+        if (html === '') {
+            html = `<tr><td colspan="6" class="text-center">Không có đơn thuê nào.</td></tr>`;
+        }
+        $('#rental_list').html(html);
+    }
+
+    // Hàm định dạng thời gian thành 15:16 5/5/2025
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0
+        const year = date.getFullYear(); // Lấy năm đầy đủ
+        return `${hours}:${minutes}  ${day}/${month}/${year}`;
+    }
+
+    // Tự động hiển thị tất cả các đơn thuê khi trang tải xong
+    $(document).ready(function() {
+        $.get('/rentals', function (data) {
+            renderRentals(data);
+        });
+    });
+
+    // Tìm đơn thuê theo số điện thoại
+    $('#search_rentals').click(function () {
+        let phone = $('#search_phone').val();
+        $.get('/rentals/search?phone=' + phone, function (data) {
+            renderRentals(data);
         });
     });
 
@@ -156,6 +187,10 @@
         if (newStatus === 'completed') {
             $.post(`/rentals/${rentalId}/complete`, function (res) {
                 alert(res.message);
+                // Tải lại danh sách đơn thuê
+                $.get('/rentals', function (data) {
+                    renderRentals(data);
+                });
             });
         }
     });
@@ -165,48 +200,30 @@
         let rentalId = $(this).data('id');
         $.get(`/rentals/${rentalId}/details`, function (data) {
             let html = '';
-            data.forEach(item => {
-                html += `
-                    <tr>
-                        <td>${item.book_title}</td>
-                        <td>${item.rental_quantity}</td>
-                        <td>${item.return_due_date}</td>
-                        <td>${item.returned_date || '-'}</td>
-                        <td>${item.is_returned ? 'Đã trả' : 'Chưa trả'}</td>
-                    </tr>`;
-            });
+            if (data.length === 0) {
+                html = `<tr><td colspan="5" class="text-center">Không có chi tiết đơn thuê.</td></tr>`;
+            } else {
+                data.forEach(item => {
+                    // Định dạng thời gian cho return_due_date và returned_date
+                    const returnDueDate = formatDateTime(item.return_due_date);
+                    const returnedDate = item.returned_date ? formatDateTime(item.returned_date) : '-';
+
+                    html += `
+                        <tr>
+                            <td>${item.book_title}</td>
+                            <td>${item.rental_quantity}</td>
+                            <td>${returnDueDate}</td>
+                            <td>${returnedDate}</td>
+                            <td>${item.is_returned ? 'Đã trả' : 'Chưa trả'}</td>
+                        </tr>`;
+                });
+            }
             $('#rental_detail_body').html(html);
             $('#rentalDetailModal').modal('show');
         });
     });
 
-    // Tự động hiển thị tất cả các đơn thuê khi trang tải xong
-    $(document).ready(function() {
-        $.get('/rentals', function (data) {
-            let html = '';
-            data.forEach(r => {
-                html += `
-                    <tr>
-                        <td>${r.id}</td>
-                        <td>${r.customer_name}</td>
-                        <td>${r.rental_date}</td>
-                        <td>
-                            <select class="form-select form-select-sm status-select" data-id="${r.id}">
-                                <option value="active" ${r.status === 'active' ? 'selected' : ''}>Active</option>
-                                <option value="completed" ${r.status === 'completed' ? 'selected' : ''}>Completed</option>
-                            </select>
-                        </td>
-                        <td>${r.total_price.toFixed(2)}</td>
-                        <td>
-                            <button class="btn btn-info btn-sm view-details" data-id="${r.id}">
-                                Xem chi tiết
-                            </button>
-                        </td>
-                    </tr>`;
-            });
-            $('#rental_list').html(html);
-        });
-    });
+
 
 </script>
 

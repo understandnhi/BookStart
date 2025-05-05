@@ -14,72 +14,92 @@ def add_rentals():
 
 
 ##### API tạo đơn thuê mới   *******QUAN TRỌNG
+from dateutil import parser  # Thêm thư viện để xử lý ngày linh hoạt
+from datetime import datetime
+import pytz
+
 @rental_views.route('/rentals', methods=['POST'])
 def create_rental():
-    """
-    API tạo đơn thuê sách.
-    - Nếu khách hàng chưa có, sẽ tự động tạo khách hàng mới, cập nhật vào bảng Customer
-    - Kiểm tra số lượng sách có đủ để thuê hay không
-    - Giảm số lượng sách trong kho.
-    - Tạo đơn thuê + chi tiết đơn thuê.
-    """
-
     data = request.get_json()
 
-    # 1️/ Kiểm tra hoặc tạo khách hàng
-    customer = Customer.query.filter_by(phone=data['customer_phone']).first()
-    if not customer:
-        customer = Customer(name=data['customer_name'], phone=data['customer_phone'])
-        db.session.add(customer)
+    try:
+        # Thiết lập múi giờ Việt Nam (UTC+7)
+        vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
+
+        # 1️/ Kiểm tra hoặc tạo khách hàng
+        customer = Customer.query.filter_by(phone=data['customer_phone']).first()
+        if not customer:
+            customer = Customer(name=data['customer_name'], phone=data['customer_phone'])
+            db.session.add(customer)
+
+        # 2️/ Kiểm tra danh sách sách trước khi tạo đơn thuê
+        total_price = 0
+        rental_details = []
+        books_to_update = []
+
+        for item in data['books']:
+            book = Book.query.get(item['book_id'])
+            if not book:
+                db.session.rollback()
+                return jsonify({'message': f'Sách với ID {item["book_id"]} không tồn tại!'}), 400
+
+            rental_quantity = item.get('rental_quantity', 1)
+            if rental_quantity < 1:
+                db.session.rollback()
+                return jsonify({'message': f'Số lượng thuê của sách "{book.title}" phải lớn hơn 0!'}), 400
+
+            if book.quantity < rental_quantity:
+                db.session.rollback()
+                return jsonify({'message': f'Sách "{book.title}" không đủ số lượng!'}), 400
+
+            try:
+                return_due_date = parser.parse(item['return_due_date']).replace(tzinfo=vn_timezone)
+            except (ValueError, TypeError):
+                db.session.rollback()
+                return jsonify({'message': f'Ngày trả dự kiến "{item["return_due_date"]}" không hợp lệ!'}), 400
+
+            books_to_update.append((book, rental_quantity))
+            total_price += book.rental_price * rental_quantity
+
+            rental_detail = RentalDetail(
+                book_id=book.id,
+                rental_quantity=rental_quantity,
+                return_due_date=return_due_date
+            )
+            rental_details.append(rental_detail)
+
+        # 3️/ Tạo đơn thuê mới
+        new_rental = Rental(
+            customer_id=customer.id,
+            rental_date=datetime.now(vn_timezone),  # Sử dụng giờ Việt Nam
+            total_price=total_price
+        )
+        db.session.add(new_rental)
+        db.session.flush()
+
+        # 4️/ Gán rental_id cho các chi tiết đơn thuê
+        for detail in rental_details:
+            detail.rental_id = new_rental.id
+            db.session.add(detail)
+
+        # 5️/ Giảm số lượng sách trong kho
+        for book, quantity in books_to_update:
+            book.quantity -= quantity
+
+        # 6️/ Commit tất cả thay đổi
         db.session.commit()
 
-    # 2️/ Tạo đơn thuê mới
-    new_rental = Rental(
-        customer_id=customer.id,
-        rental_date=datetime.utcnow(),
-        total_price=0  # Tạm thời 0, sẽ cập nhật sau
-    )
-    db.session.add(new_rental)
-    db.session.commit()
+        return jsonify({
+            'message': 'Đơn thuê đã được tạo thành công!',
+            'rental_id': new_rental.id,
+            'customer': {'id': customer.id, 'name': customer.name, 'phone': customer.phone},
+            'total_price': total_price,
+            'books': [{'book_id': detail.book_id, 'quantity': detail.rental_quantity} for detail in rental_details]
+        }), 201
 
-    # 3/ Thêm sách vào đơn thuê
-    total_price = 0
-    rental_details = []
-    for item in data['books']:
-        book = Book.query.get(item['book_id'])
-
-        # Kiểm tra sách có đủ số lượng để thuê không
-        if not book or book.quantity < item['rental_quantity']:
-            return jsonify({'message': f'Sách "{book.title}" không đủ số lượng!'}), 400
-
-        # Giảm số lượng sách trong kho
-        book.quantity -= item['rental_quantity']
-
-        # Tính tổng tiền thuê
-        total_price += book.rental_price * item['rental_quantity']
-
-        # Tạo chi tiết đơn thuê
-        rental_detail = RentalDetail(
-            rental_id=new_rental.id,
-            book_id=book.id,
-            rental_quantity=item['rental_quantity'],
-            return_due_date=datetime.strptime(item['return_due_date'], "%Y-%m-%d")  # Tự chọn ngày trả dự kiến
-        )
-        rental_details.append(rental_detail)
-        db.session.add(rental_detail)
-
-    # 4/ Cập nhật tổng tiền thuê vào đơn thuê
-    new_rental.total_price = total_price
-    db.session.commit()
-
-    return jsonify({
-        'message': 'Đơn thuê đã được tạo thành công!',
-        'rental_id': new_rental.id,
-        'customer': {'id': customer.id, 'name': customer.name, 'phone': customer.phone},
-        'total_price': total_price,
-        'books': [{'book_id': detail.book_id, 'quantity': detail.rental_quantity} for detail in rental_details]
-    }), 201
-
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Lỗi khi tạo đơn thuê: {str(e)}'}), 500
 
 
 
@@ -94,16 +114,18 @@ def manage_rentals():
 # API hiển thị danh sách đơn thuê, bảng rental ko có customer_name, join với customer thông qua customer_id
 @rental_views.route('/rentals', methods=['GET'])
 def get_all_rentals():
-    rentals = Rental.query.all()  # Truy vấn tất cả các đơn thuê từ bảng Rental
+    rentals = Rental.query.filter(Rental.total_price > 0).all()
     rental_list = []
 
     for rental in rentals:
-        # Lấy thông tin khách hàng từ bảng Customer
-        customer = Customer.query.get(rental.customer_id)  # Truy vấn khách hàng theo customer_id
+        has_details = RentalDetail.query.filter_by(rental_id=rental.id).first() is not None
+        if not has_details:
+            continue
 
+        customer = Customer.query.get(rental.customer_id)
         rental_data = {
             "id": rental.id,
-            "customer_name": customer.name if customer else "Không có tên khách hàng",  # Trả tên khách hàng
+            "customer_name": customer.name if customer else "Không có tên khách hàng",
             "rental_date": rental.rental_date.strftime('%Y-%m-%d %H:%M:%S'),
             "return_date": rental.return_date.strftime('%Y-%m-%d %H:%M:%S') if rental.return_date else None,
             "status": rental.status,
@@ -142,19 +164,21 @@ def complete_rental(rental_id):
     if not rental or rental.status == 'completed':
         return jsonify({'message': 'Đơn không tồn tại hoặc đã hoàn tất'}), 400
 
+    vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
     rental.status = 'completed'
-    rental.return_date = datetime.utcnow()
+    rental.return_date = datetime.now(vn_timezone)  # Sử dụng giờ Việt Nam
 
-    # Trả từng quyển sách
     details = RentalDetail.query.filter_by(rental_id=rental.id).all()
     for detail in details:
         book = Book.query.get(detail.book_id)
         book.quantity += detail.rental_quantity
         detail.is_returned = True
-        detail.returned_date = datetime.utcnow()
+        detail.returned_date = datetime.now(vn_timezone)  # Sử dụng giờ Việt Nam
 
     db.session.commit()
     return jsonify({'message': 'Đã hoàn tất đơn thuê và cập nhật kho sách'})
+
+
 
 # API lấy chi tiết đơn thuê
 @rental_views.route('/rentals/<int:rental_id>/details', methods=['GET'])
@@ -166,8 +190,23 @@ def get_rental_details(rental_id):
         result.append({
             'book_title': book.title,
             'rental_quantity': detail.rental_quantity,
-            'return_due_date': detail.return_due_date.strftime('%Y-%m-%d'),
-            'returned_date': detail.returned_date.strftime('%Y-%m-%d') if detail.returned_date else None,
+            'return_due_date': detail.return_due_date.strftime('%Y-%m-%d %H:%M:%S'),  # Thêm giờ
+            'returned_date': detail.returned_date.strftime('%Y-%m-%d %H:%M:%S') if detail.returned_date else None,  # Thêm giờ
             'is_returned': detail.is_returned
         })
     return jsonify(result)
+
+# Kiểm tra và xóa các đơn thuê rỗng hiện có
+def clean_empty_rentals():
+    try:
+        empty_rentals = Rental.query.filter_by(total_price=0).all()
+        for rental in empty_rentals:
+            # Kiểm tra xem có RentalDetail liên quan không
+            details = RentalDetail.query.filter_by(rental_id=rental.id).first()
+            if not details:
+                db.session.delete(rental)
+        db.session.commit()
+        print("Đã xóa các đơn thuê rỗng.")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Lỗi khi xóa đơn thuê rỗng: {str(e)}")
