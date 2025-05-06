@@ -124,9 +124,9 @@
         let html = '';
         data.forEach(r => {
             if (r.total_price > 0) {
-                // Định dạng thời gian theo kiểu 15:16 5/5/2025
                 const rentalDate = formatDateTime(r.rental_date);
                 const returnDate = r.return_date ? formatDateTime(r.return_date) : '-';
+                const isDisabled = r.status === 'completed' ? 'disabled' : ''; // Thêm thuộc tính disabled nếu completed
 
                 html += `
                     <tr>
@@ -134,7 +134,7 @@
                         <td>${r.customer_name}</td>
                         <td>${rentalDate}</td>
                         <td>
-                            <select class="form-select form-select-sm status-select" data-id="${r.id}">
+                            <select class="form-select form-select-sm status-select" data-id="${r.id}" ${isDisabled}>
                                 <option value="active" ${r.status === 'active' ? 'selected' : ''}>Active</option>
                                 <option value="completed" ${r.status === 'completed' ? 'selected' : ''}>Completed</option>
                             </select>
@@ -184,6 +184,17 @@
     $(document).on('change', '.status-select', function () {
         let rentalId = $(this).data('id');
         let newStatus = $(this).val();
+        let currentStatus = $(this).find('option:selected').val(); // Lấy trạng thái hiện tại
+
+        // Kiểm tra nếu trạng thái hiện tại là "completed"
+        if ($(this).find('option[selected]').val() === 'completed') {
+            alert('Không thể thay đổi trạng thái từ Completed về Active.');
+            // Đặt lại trạng thái về "completed"
+            $(this).val('completed');
+            return;
+        }
+
+        // Nếu trạng thái mới là "completed", gửi yêu cầu cập nhật
         if (newStatus === 'completed') {
             $.post(`/rentals/${rentalId}/complete`, function (res) {
                 alert(res.message);

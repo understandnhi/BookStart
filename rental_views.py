@@ -161,23 +161,36 @@ def search_rentals():
 @rental_views.route('/rentals/<int:rental_id>/complete', methods=['POST'])
 def complete_rental(rental_id):
     rental = Rental.query.get(rental_id)
-    if not rental or rental.status == 'completed':
-        return jsonify({'message': 'Đơn không tồn tại hoặc đã hoàn tất'}), 400
+    if not rental:
+        return jsonify({'message': 'Đơn thuê không tồn tại'}), 404
+    if rental.status == 'completed':
+        return jsonify({'message': 'Đơn thuê đã hoàn tất, không thể cập nhật lại'}), 400
+    if rental.status != 'active':
+        return jsonify({'message': 'Đơn thuê không ở trạng thái Active'}), 400
 
     vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
     rental.status = 'completed'
-    rental.return_date = datetime.now(vn_timezone)  # Sử dụng giờ Việt Nam
+    rental.return_date = datetime.now(vn_timezone)
 
     details = RentalDetail.query.filter_by(rental_id=rental.id).all()
     for detail in details:
         book = Book.query.get(detail.book_id)
+        if not book:
+            db.session.rollback()
+            return jsonify({'message': f'Sách với ID {detail.book_id} không tồn tại'}), 400
+        if detail.rental_quantity <= 0:
+            db.session.rollback()
+            return jsonify({'message': 'Số lượng sách trả lại không hợp lệ'}), 400
         book.quantity += detail.rental_quantity
         detail.is_returned = True
-        detail.returned_date = datetime.now(vn_timezone)  # Sử dụng giờ Việt Nam
+        detail.returned_date = datetime.now(vn_timezone)
 
-    db.session.commit()
-    return jsonify({'message': 'Đã hoàn tất đơn thuê và cập nhật kho sách'})
-
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Đã hoàn tất đơn thuê và cập nhật kho sách'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Lỗi server khi cập nhật đơn thuê'}), 500
 
 
 # API lấy chi tiết đơn thuê
