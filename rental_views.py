@@ -46,25 +46,24 @@ def get_book_info(book_id):
 
 
 # API tạo đơn thuê mới
+# API tạo đơn thuê mới
 @rental_views.route('/rentals', methods=['POST'])
 def create_rental():
     data = request.get_json()
 
     try:
-        # Thiết lập múi giờ Việt Nam (UTC+7)
         vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
 
-        # 1️/ Kiểm tra hoặc tạo khách hàng
+        # Kiểm tra hoặc tạo khách hàng
         customer = Customer.query.filter_by(phone=data['customer_phone'], is_deleted=False).first()
         if not customer:
             customer = Customer(name=data['customer_name'], phone=data['customer_phone'], is_deleted=False)
             db.session.add(customer)
 
-        # 2️/ Kiểm tra danh sách sách trước khi tạo đơn thuê
         total_price = 0
         rental_details = []
         books_to_update = []
-        book_details = []  # Lưu thông tin sách để trả về
+        book_details = []
 
         for item in data['books']:
             book = Book.query.filter_by(id=item['book_id'], is_deleted=False).first()
@@ -103,7 +102,6 @@ def create_rental():
             )
             rental_details.append(rental_detail)
 
-            # Lưu thông tin sách để trả về
             book_details.append({
                 'book_id': book.id,
                 'title': book.title,
@@ -112,7 +110,6 @@ def create_rental():
                 'item_total': item_total
             })
 
-        # 3️/ Tạo đơn thuê mới
         new_rental = Rental(
             customer_id=customer.id,
             rental_date=datetime.now(vn_timezone),
@@ -121,16 +118,13 @@ def create_rental():
         db.session.add(new_rental)
         db.session.flush()
 
-        # 4️/ Gán rental_id cho các chi tiết đơn thuê
         for detail in rental_details:
             detail.rental_id = new_rental.id
             db.session.add(detail)
 
-        # 5️/ Giảm số lượng sách trong kho
         for book, quantity in books_to_update:
             book.quantity -= quantity
 
-        # 6️/ Commit tất cả thay đổi
         db.session.commit()
 
         logger.info(f"Created rental ID {new_rental.id} for customer {customer.name}")
@@ -148,6 +142,7 @@ def create_rental():
         return jsonify({'message': f'Lỗi khi tạo đơn thuê: {str(e)}'}), 500
 
 
+
 # API hiển thị trang quản lý đơn thuê
 @rental_views.route('/manage_rentals')
 def manage_rentals():
@@ -163,6 +158,9 @@ def get_all_rentals():
             Customer.is_deleted == False
         ).all()
         rental_list = []
+        vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
+        current_date = datetime.now(vn_timezone)
+        late_fee_per_day = 1000  # Phí phạt: 1000 VNĐ/ngày quá hạn
 
         for rental in rentals:
             has_details = RentalDetail.query.filter_by(rental_id=rental.id).first() is not None
@@ -173,13 +171,37 @@ def get_all_rentals():
             if not customer:
                 continue
 
+            # Kiểm tra trạng thái overdue (chỉ áp dụng nếu không phải 'completed')
+            total_late_days = 0
+            late_fee = 0
+            if rental.status != 'completed':
+                rental_details = RentalDetail.query.filter_by(rental_id=rental.id, is_returned=False).all()
+                is_overdue = False
+                for detail in rental_details:
+                    # Chuẩn hóa return_due_date thành offset-aware
+                    return_due_date = detail.return_due_date
+                    if return_due_date.tzinfo is None:
+                        return_due_date = vn_timezone.localize(return_due_date)
+
+                    if current_date > return_due_date:
+                        is_overdue = True
+                        days_overdue = (current_date - return_due_date).days
+                        total_late_days += days_overdue * detail.rental_quantity
+                        late_fee += days_overdue * late_fee_per_day * detail.rental_quantity
+
+                if is_overdue and rental.status != 'overdue':
+                    rental.status = 'overdue'
+                    db.session.commit()
+
             rental_data = {
                 "id": rental.id,
                 "customer_name": customer.name,
                 "rental_date": rental.rental_date.strftime('%Y-%m-%d %H:%M:%S'),
                 "return_date": rental.return_date.strftime('%Y-%m-%d %H:%M:%S') if rental.return_date else None,
                 "status": rental.status,
-                "total_price": rental.total_price
+                "total_price": rental.total_price,
+                "late_days": total_late_days,
+                "late_fee": late_fee
             }
             rental_list.append(rental_data)
 
@@ -202,8 +224,11 @@ def search_rentals():
 
         rentals = Rental.query.filter_by(customer_id=customer.id).all()
         result = []
+        vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
+        current_date = datetime.now(vn_timezone)
+        late_fee_per_day = 1000
+
         for rental in rentals:
-            # Kiểm tra chi tiết đơn thuê có sách chưa bị xóa
             has_valid_details = RentalDetail.query.join(Book).filter(
                 RentalDetail.rental_id == rental.id,
                 Book.is_deleted == False
@@ -211,13 +236,36 @@ def search_rentals():
             if not has_valid_details:
                 continue
 
+            total_late_days = 0
+            late_fee = 0
+            if rental.status != 'completed':
+                rental_details = RentalDetail.query.filter_by(rental_id=rental.id, is_returned=False).all()
+                is_overdue = False
+                for detail in rental_details:
+                    return_due_date = detail.return_due_date
+                    if return_due_date.tzinfo is None:
+                        return_due_date = vn_timezone.localize(return_due_date)
+
+                    if current_date > return_due_date:
+                        is_overdue = True
+                        days_overdue = (current_date - return_due_date).days
+                        total_late_days += days_overdue * detail.rental_quantity
+                        late_fee += days_overdue * late_fee_per_day * detail.rental_quantity
+
+                if is_overdue and rental.status != 'overdue':
+                    rental.status = 'overdue'
+                    db.session.commit()
+
             result.append({
                 'id': rental.id,
                 'customer_name': customer.name,
                 'rental_date': rental.rental_date.strftime('%Y-%m-%d'),
                 'status': rental.status,
-                'total_price': rental.total_price
+                'total_price': rental.total_price,
+                'late_days': total_late_days,
+                'late_fee': late_fee
             })
+
         logger.debug(f"Found {len(result)} rentals for phone {phone}")
         return jsonify(result), 200
     except Exception as e:
@@ -236,9 +284,9 @@ def complete_rental(rental_id):
         if rental.status == 'completed':
             logger.warning(f"Rental ID {rental_id} already completed")
             return jsonify({'message': 'Đơn thuê đã hoàn tất, không thể cập nhật lại'}), 400
-        if rental.status != 'active':
-            logger.warning(f"Rental ID {rental_id} not in Active state")
-            return jsonify({'message': 'Đơn thuê không ở trạng thái Active'}), 400
+        if rental.status != 'active' and rental.status != 'overdue':
+            logger.warning(f"Rental ID {rental_id} not in Active or Overdue state")
+            return jsonify({'message': 'Đơn thuê không ở trạng thái Active hoặc Overdue'}), 400
 
         customer = Customer.query.filter_by(id=rental.customer_id, is_deleted=False).first()
         if not customer:
@@ -246,8 +294,9 @@ def complete_rental(rental_id):
             return jsonify({'message': 'Khách hàng không tồn tại hoặc đã bị xóa'}), 400
 
         vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
-        rental.status = 'completed'
-        rental.return_date = datetime.now(vn_timezone)
+        current_date = datetime.now(vn_timezone)
+        late_fee_per_day = 1000
+        total_late_fee = 0
 
         details = RentalDetail.query.filter_by(rental_id=rental.id).all()
         for detail in details:
@@ -260,17 +309,34 @@ def complete_rental(rental_id):
                 db.session.rollback()
                 logger.error(f"Invalid return quantity for book ID {detail.book_id}")
                 return jsonify({'message': 'Số lượng sách trả lại không hợp lệ'}), 400
+
+            return_due_date = detail.return_due_date
+            if return_due_date.tzinfo is None:
+                return_due_date = vn_timezone.localize(return_due_date)
+
+            if not detail.is_returned and current_date > return_due_date:
+                days_overdue = (current_date - return_due_date).days
+                total_late_fee += days_overdue * late_fee_per_day * detail.rental_quantity
+
             book.quantity += detail.rental_quantity
             detail.is_returned = True
-            detail.returned_date = datetime.now(vn_timezone)
+            detail.returned_date = current_date
+
+        rental.status = 'completed'
+        rental.return_date = current_date
+        rental.total_price += total_late_fee
 
         db.session.commit()
-        logger.info(f"Completed rental ID {rental_id}")
-        return jsonify({'message': 'Đã hoàn tất đơn thuê và cập nhật kho sách'}), 200
+        logger.info(f"Completed rental ID {rental_id} with late fee {total_late_fee}")
+        return jsonify({
+            'message': 'Đã hoàn tất đơn thuê và cập nhật kho sách',
+            'late_fee': total_late_fee
+        }), 200
     except Exception as e:
         db.session.rollback()
         logger.error(f"Error completing rental ID {rental_id}: {str(e)}")
         return jsonify({'message': 'Lỗi server khi cập nhật đơn thuê'}), 500
+
 
 
 # API lấy chi tiết đơn thuê
@@ -282,17 +348,33 @@ def get_rental_details(rental_id):
             Book.is_deleted == False
         ).all()
         result = []
+        vn_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
+        current_date = datetime.now(vn_timezone)
+        late_fee_per_day = 1000
+
         for detail in details:
             book = Book.query.filter_by(id=detail.book_id, is_deleted=False).first()
             if not book:
                 continue
+
+            return_due_date = detail.return_due_date
+            if return_due_date.tzinfo is None:
+                return_due_date = vn_timezone.localize(return_due_date)
+
+            days_overdue = 0
+            if not detail.is_returned and current_date > return_due_date:
+                days_overdue = (current_date - return_due_date).days
+
             result.append({
                 'book_title': book.title,
                 'rental_quantity': detail.rental_quantity,
                 'return_due_date': detail.return_due_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'returned_date': detail.returned_date.strftime('%Y-%m-%d %H:%M:%S') if detail.returned_date else None,
-                'is_returned': detail.is_returned
+                'is_returned': detail.is_returned,
+                'late_days': days_overdue,
+                'late_fee': days_overdue * late_fee_per_day * detail.rental_quantity
             })
+
         logger.debug(f"Retrieved {len(result)} details for rental ID {rental_id}")
         return jsonify(result), 200
     except Exception as e:
