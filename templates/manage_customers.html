@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Khách hàng</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <style>
         body { background-color: #f8f9fa; }
         .table-container {
@@ -18,7 +19,7 @@
     </style>
 </head>
 <body>
-    <!-- 🏗 MENU ĐIỀU HƯỚNG -->
+    <!-- MENU ĐIỀU HƯỚNG -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
@@ -28,13 +29,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
+                        <a class="nav-link" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
+                        <a class="nav-link" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
                     </li>
                 </ul>
             </div>
@@ -77,10 +78,14 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="customerId">
-                    <label>Tên:</label>
-                    <input type="text" id="name" class="form-control mb-2">
-                    <label>Số điện thoại:</label>
-                    <input type="text" id="phone" class="form-control mb-2">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Tên:</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Số điện thoại:</label>
+                        <input type="text" id="phone" class="form-control" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -109,16 +114,29 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", loadCustomers);
+        // Cấu hình toastr
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            timeOut: 5000
+        };
 
+        let selectedCustomerId = null;
+
+        // Tải danh sách khách hàng
         function loadCustomers() {
             fetch("/customers")
                 .then(response => response.json())
                 .then(data => renderTable(data))
-                .catch(() => alert("Lỗi khi tải danh sách khách hàng!"));
+                .catch(error => toastr.error('Lỗi khi tải danh sách khách hàng: ' + error.message));
         }
 
+        // Hiển thị bảng khách hàng
         function renderTable(data) {
             let tableBody = document.getElementById("customerTable");
             tableBody.innerHTML = "";
@@ -139,19 +157,27 @@
             });
         }
 
+        // Tìm kiếm khách hàng
         function searchCustomers() {
             let query = document.getElementById("searchInput").value.trim();
             if (!query) {
-                loadCustomers(); // Tải lại toàn bộ danh sách nếu query rỗng
+                loadCustomers();
                 return;
             }
-
             fetch(`/search_customer?query=${encodeURIComponent(query)}`)
                 .then(response => response.json())
-                .then(data => renderTable(data))
-                .catch(() => alert("Không tìm thấy khách hàng!"));
+                .then(data => {
+                    if (data.message) {
+                        toastr.error(data.message);
+                        renderTable({ message: 'Không tìm thấy khách hàng!' });
+                    } else {
+                        renderTable(data);
+                    }
+                })
+                .catch(error => toastr.error('Lỗi khi tìm kiếm khách hàng: ' + error.message));
         }
 
+        // Mở popup thêm khách hàng
         function openAddPopup() {
             document.getElementById("modalTitle").innerText = "Thêm khách hàng";
             document.getElementById("customerId").value = "";
@@ -159,6 +185,7 @@
             document.getElementById("phone").value = "";
         }
 
+        // Mở popup sửa khách hàng
         function openEditPopup(customer) {
             document.getElementById("modalTitle").innerText = "Sửa khách hàng";
             document.getElementById("customerId").value = customer.id;
@@ -167,12 +194,23 @@
             new bootstrap.Modal(document.getElementById('customerModal')).show();
         }
 
+        // Xác nhận xóa
+        function confirmDelete(id) {
+            selectedCustomerId = id;
+            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+        }
+
+        // Lưu khách hàng
         function saveCustomer() {
             let id = document.getElementById("customerId").value;
             let name = document.getElementById("name").value.trim();
             let phone = document.getElementById("phone").value.trim();
             if (!name || !phone) {
-                alert("Vui lòng nhập đầy đủ tên và số điện thoại!");
+                toastr.error("Vui lòng nhập đầy đủ tên và số điện thoại!");
+                return;
+            }
+            if (!/^\d{10}$/.test(phone)) {
+                toastr.error("Số điện thoại phải có 10 chữ số!");
                 return;
             }
 
@@ -183,41 +221,48 @@
             fetch(url, {
                 method: method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                body: JSON.stringify(data)
             })
                 .then(response => {
-                    if (!response.ok) throw new Error("Lỗi khi lưu khách hàng!");
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.message); });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    toastr.success(data.message);
                     loadCustomers();
                     bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
                 })
-                .catch(() => alert("Lỗi khi lưu khách hàng!"));
+                .catch(error => toastr.error('Lỗi: ' + error.message));
         }
 
-        let deleteId = null;
-
-        function confirmDelete(id) {
-            deleteId = id;
-            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
-        }
-
-        function deleteCustomer(id) {
-            fetch(`/delete_customer/${id}`, { method: "DELETE" })
-                .then(response => {
-                    if (!response.ok) throw new Error("Lỗi khi xóa khách hàng!");
-                    loadCustomers();
-                })
-                .catch(() => alert("Lỗi khi xóa khách hàng!"));
-        }
-
+        // Xóa khách hàng
         document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
-            if (deleteId !== null) {
-                deleteCustomer(deleteId);
-                deleteId = null;
-                bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+            if (selectedCustomerId !== null) {
+                fetch(`/customers/${selectedCustomerId}/delete`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({})
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw new Error(err.message); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        toastr.success(data.message);
+                        loadCustomers();
+                        bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                    })
+                    .catch(error => toastr.error('Lỗi: ' + error.message));
+                selectedCustomerId = null;
             }
         });
-    </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        // Tải danh sách khách hàng khi trang được load
+        document.addEventListener("DOMContentLoaded", loadCustomers);
+    </script>
 </body>
 </html>
