@@ -168,9 +168,11 @@
                                 </td>`;
                         });
                     }
+                    console.log("Loaded books:", data.length);
                 })
                 .catch(error => {
                     toastr.error('Lỗi khi tải danh sách sách: ' + error.message);
+                    console.error("Error loading books:", error);
                 });
         }
 
@@ -204,9 +206,11 @@
                                 </td>`;
                         });
                     }
+                    console.log("Search results:", data.length || data.message);
                 })
                 .catch(error => {
                     toastr.error('Lỗi khi tìm kiếm sách: ' + error.message);
+                    console.error("Error searching books:", error);
                 });
         }
 
@@ -274,9 +278,11 @@
                     toastr.success(data.message);
                     loadBooks();
                     bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
+                    console.log("Saved book:", data);
                 })
                 .catch(error => {
-                    toastr.error('Lỗi: ' + error.message);
+                    toastr.error(error.message);
+                    console.error("Error saving book:", error);
                 });
         }
 
@@ -289,7 +295,10 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.message); });
+                        return response.json().then(err => {
+                            console.error("Delete error:", err.message);
+                            throw new Error(err.message);
+                        });
                     }
                     return response.json();
                 })
@@ -297,9 +306,11 @@
                     toastr.success(data.message);
                     loadBooks();
                     bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                    console.log("Deleted book ID:", selectedBookId);
                 })
                 .catch(error => {
-                    toastr.error('Lỗi: ' + error.message);
+                    toastr.error(error.message);
+                    console.error("Error deleting book:", error);
                 });
         });
 

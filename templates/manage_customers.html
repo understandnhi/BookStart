@@ -132,8 +132,14 @@
         function loadCustomers() {
             fetch("/customers")
                 .then(response => response.json())
-                .then(data => renderTable(data))
-                .catch(error => toastr.error('Lỗi khi tải danh sách khách hàng: ' + error.message));
+                .then(data => {
+                    renderTable(data);
+                    console.log("Loaded customers:", data.length || data.message);
+                })
+                .catch(error => {
+                    toastr.error('Lỗi khi tải danh sách khách hàng: ' + error.message);
+                    console.error("Error loading customers:", error);
+                });
         }
 
         // Hiển thị bảng khách hàng
@@ -173,8 +179,12 @@
                     } else {
                         renderTable(data);
                     }
+                    console.log("Search results:", data.length || data.message);
                 })
-                .catch(error => toastr.error('Lỗi khi tìm kiếm khách hàng: ' + error.message));
+                .catch(error => {
+                    toastr.error('Lỗi khi tìm kiếm khách hàng: ' + error.message);
+                    console.error("Error searching customers:", error);
+                });
         }
 
         // Mở popup thêm khách hàng
@@ -233,8 +243,12 @@
                     toastr.success(data.message);
                     loadCustomers();
                     bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
+                    console.log("Saved customer:", data);
                 })
-                .catch(error => toastr.error('Lỗi: ' + error.message));
+                .catch(error => {
+                    toastr.error(error.message);
+                    console.error("Error saving customer:", error);
+                });
         }
 
         // Xóa khách hàng
@@ -247,7 +261,10 @@
                 })
                     .then(response => {
                         if (!response.ok) {
-                            return response.json().then(err => { throw new Error(err.message); });
+                            return response.json().then(err => {
+                                console.error("Delete error:", err.message);
+                                throw new Error(err.message);
+                            });
                         }
                         return response.json();
                     })
@@ -255,8 +272,12 @@
                         toastr.success(data.message);
                         loadCustomers();
                         bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                        console.log("Deleted customer ID:", selectedCustomerId);
                     })
-                    .catch(error => toastr.error('Lỗi: ' + error.message));
+                    .catch(error => {
+                        toastr.error(error.message);
+                        console.error("Error deleting customer:", error);
+                    });
                 selectedCustomerId = null;
             }
         });

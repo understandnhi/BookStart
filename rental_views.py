@@ -17,12 +17,10 @@ logger = logging.getLogger(__name__)
 # Tạo Blueprint cho quản lý đơn thuê
 rental_views = Blueprint('rental_views', __name__)
 
-
 # API hiển thị trang tạo đơn thuê
 @rental_views.route('/add_rentals')
 def add_rentals():
     return render_template('add_rentals.html')
-
 
 # API lấy thông tin sách theo ID (dùng để hiển thị tên sách, giá thuê)
 @rental_views.route('/books/<int:book_id>/info', methods=['GET'])
@@ -44,8 +42,6 @@ def get_book_info(book_id):
         logger.error(f"Error retrieving book info for ID {book_id}: {str(e)}")
         return jsonify({'message': f'Lỗi khi lấy thông tin sách: {str(e)}'}), 500
 
-
-# API tạo đơn thuê mới
 # API tạo đơn thuê mới
 @rental_views.route('/rentals', methods=['POST'])
 def create_rental():
@@ -113,7 +109,8 @@ def create_rental():
         new_rental = Rental(
             customer_id=customer.id,
             rental_date=datetime.now(vn_timezone),
-            total_price=total_price
+            total_price=total_price,
+            status='active'  # Đặt trạng thái rõ ràng
         )
         db.session.add(new_rental)
         db.session.flush()
@@ -141,18 +138,16 @@ def create_rental():
         logger.error(f"Error creating rental: {str(e)}")
         return jsonify({'message': f'Lỗi khi tạo đơn thuê: {str(e)}'}), 500
 
-
-
 # API hiển thị trang quản lý đơn thuê
 @rental_views.route('/manage_rentals')
 def manage_rentals():
     return render_template('manage_rentals.html')
 
-
 # API hiển thị danh sách đơn thuê
 @rental_views.route('/rentals', methods=['GET'])
 def get_all_rentals():
     try:
+        # Lấy các đơn thuê có total_price > 0 và khách hàng chưa xóa
         rentals = Rental.query.join(Customer).filter(
             Rental.total_price > 0,
             Customer.is_deleted == False
@@ -163,8 +158,12 @@ def get_all_rentals():
         late_fee_per_day = 1000  # Phí phạt: 1000 VNĐ/ngày quá hạn
 
         for rental in rentals:
-            has_details = RentalDetail.query.filter_by(rental_id=rental.id).first() is not None
-            if not has_details:
+            # Kiểm tra xem đơn thuê có RentalDetail liên quan đến sách chưa xóa
+            has_valid_details = RentalDetail.query.join(Book).filter(
+                RentalDetail.rental_id == rental.id,
+                Book.is_deleted == False
+            ).first() is not None
+            if not has_valid_details:
                 continue
 
             customer = Customer.query.filter_by(id=rental.customer_id, is_deleted=False).first()
@@ -178,7 +177,6 @@ def get_all_rentals():
                 rental_details = RentalDetail.query.filter_by(rental_id=rental.id, is_returned=False).all()
                 is_overdue = False
                 for detail in rental_details:
-                    # Chuẩn hóa return_due_date thành offset-aware
                     return_due_date = detail.return_due_date
                     if return_due_date.tzinfo is None:
                         return_due_date = vn_timezone.localize(return_due_date)
@@ -211,7 +209,6 @@ def get_all_rentals():
         logger.error(f"Error retrieving rentals: {str(e)}")
         return jsonify({'message': f'Lỗi khi lấy danh sách đơn thuê: {str(e)}'}), 500
 
-
 # Tìm đơn thuê theo số điện thoại
 @rental_views.route('/rentals/search', methods=['GET'])
 def search_rentals():
@@ -229,6 +226,7 @@ def search_rentals():
         late_fee_per_day = 1000
 
         for rental in rentals:
+            # Kiểm tra xem đơn thuê có RentalDetail liên quan đến sách chưa xóa
             has_valid_details = RentalDetail.query.join(Book).filter(
                 RentalDetail.rental_id == rental.id,
                 Book.is_deleted == False
@@ -271,7 +269,6 @@ def search_rentals():
     except Exception as e:
         logger.error(f"Error searching rentals: {str(e)}")
         return jsonify({'message': f'Lỗi khi tìm kiếm đơn thuê: {str(e)}'}), 500
-
 
 # Cập nhật trạng thái đơn thuê và hoàn trả sách
 @rental_views.route('/rentals/<int:rental_id>/complete', methods=['POST'])
@@ -337,8 +334,6 @@ def complete_rental(rental_id):
         logger.error(f"Error completing rental ID {rental_id}: {str(e)}")
         return jsonify({'message': 'Lỗi server khi cập nhật đơn thuê'}), 500
 
-
-
 # API lấy chi tiết đơn thuê
 @rental_views.route('/rentals/<int:rental_id>/details', methods=['GET'])
 def get_rental_details(rental_id):
@@ -381,12 +376,17 @@ def get_rental_details(rental_id):
         logger.error(f"Error retrieving details for rental ID {rental_id}: {str(e)}")
         return jsonify({'message': f'Lỗi khi lấy chi tiết đơn thuê: {str(e)}'}), 500
 
-
 # Kiểm tra và xóa các đơn thuê rỗng hiện có
 def clean_empty_rentals():
     try:
         empty_rentals = Rental.query.filter_by(total_price=0).all()
+        deleted_count = 0
         for rental in empty_rentals:
+            # Kiểm tra trạng thái để không xóa đơn thuê active/overdue
+            if rental.status in ['active', 'overdue']:
+                logger.warning(f"Skipped deleting rental ID {rental.id} with status {rental.status}")
+                continue
+
             # Kiểm tra xem có RentalDetail liên quan với sách chưa bị xóa
             details = RentalDetail.query.join(Book).filter(
                 RentalDetail.rental_id == rental.id,
@@ -394,8 +394,10 @@ def clean_empty_rentals():
             ).first()
             if not details:
                 db.session.delete(rental)
+                deleted_count += 1
+                logger.info(f"Deleted empty rental ID {rental.id}")
         db.session.commit()
-        logger.info("Deleted empty rentals")
+        logger.info(f"Deleted {deleted_count} empty rentals")
     except Exception as e:
         db.session.rollback()
         logger.error(f"Error cleaning empty rentals: {str(e)}")
