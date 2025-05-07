@@ -7,7 +7,7 @@ from customer_views import customer_views
 app = Flask(__name__)
 
 # Cấu hình SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books3.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Khởi tạo database
