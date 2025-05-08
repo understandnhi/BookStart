@@ -1,12 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required, current_user
 from models import db, User
 from rental_views import rental_views
 from views import views
 from customer_views import customer_views
 from admin_views import admin_views
 import bcrypt
+from datetime import timedelta
 
 app = Flask(__name__)
 
@@ -14,6 +15,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books4.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'understandnhi'  # Cần thiết cho session
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
 
 # Khởi tạo database
 db.init_app(app)

@@ -1,15 +1,18 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from models import db, User
 import bcrypt
+from flask_login import login_required, login_user, current_user, logout_user
 
 admin_views = Blueprint('admin_views', __name__)
 
-# Hàm kiểm tra quyền admin
+#hàm kiểm tra quyền admin
 def is_admin():
-    return session.get('role') == 'admin'
+    #return session.get('role') == 'admin'
+    return current_user.is_authenticated and current_user.role == 'admin'
 
 # Route khởi tạo tài khoản admin mặc định
 @admin_views.route('/admin/init', methods=['GET'])
+@login_required
 def init_admin():
     if not is_admin():
         flash('Bạn không có quyền thực hiện thao tác này.')
@@ -40,8 +43,9 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')) and user.is_active:
-            session['user_id'] = user.id
-            session['role'] = user.role
+            #session['user_id'] = user.id
+            #session['role'] = user.role
+            login_user(user, remember=True)
             if user.role == 'admin':
                 return redirect(url_for('admin_views.admin_dashboard'))
             return redirect(url_for('admin_views.staff_dashboard'))
@@ -51,14 +55,16 @@ def login():
 # Route đăng xuất
 @admin_views.route('/logout')
 def logout():
-    session.pop('user_id', None)
-    session.pop('role', None)
+    #session.pop('user_id', None)
+    #session.pop('role', None)
+    logout_user()
     return redirect(url_for('admin_views.login'))
 
 # Route dashboard admin
 @admin_views.route('/admin')
+@login_required
 def admin_dashboard():
-    if not is_admin():
+    if current_user.role != 'admin':
         flash('Bạn không có quyền truy cập trang này.')
         return redirect(url_for('admin_views.login'))
     users = User.query.all()
@@ -66,10 +72,11 @@ def admin_dashboard():
 
 # Route dashboard nhân viên
 @admin_views.route('/staff')
+@login_required
 def staff_dashboard():
-    if 'user_id' not in session:
-        flash('Vui lòng đăng nhập.')
-        return redirect(url_for('admin_views.login'))
+    #if 'user_id' not in session:
+    #    flash('Vui lòng đăng nhập.')
+    #    return redirect(url_for('admin_views.login'))
     return render_template('staff_dashboard.html')
 
 # Route tạo tài khoản nhân viên
