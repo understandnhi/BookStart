@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="text-center fw-bold">Quản Lý Nhân Viên</h2>
+
+<!-- Phần chứa nút thêm nhân viên -->
+<div class="table-container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Danh sách nhân viên</h4>
+        <a href="{{ url_for('admin_views.create_user') }}" class="btn btn-success">+ Thêm nhân viên</a>
+    </div>
+
+    <!-- Bảng hiển thị nhân viên -->
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên đăng nhập</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email or 'N/A' }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ 'Hoạt động' if user.is_active else 'Vô hiệu hóa' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_views.edit_user', id=user.id) }}" class="btn btn-warning btn-sm">✏️ Sửa</a>
+                        {% if user.role != 'admin' %}
+                        <a href="{{ url_for('admin_views.deactivate_user', id=user.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn vô hiệu hóa tài khoản này?')">🗑️ Vô hiệu hóa</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not users %}
+                <tr>
+                    <td colspan="7" class="text-center">Không có nhân viên nào.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .table-container {
+        width: 90%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}

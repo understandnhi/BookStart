@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
+from flask_login import login_required
 from models import db, Book, Rental, RentalDetail
 from unidecode import unidecode
 import logging
@@ -17,8 +18,15 @@ views = Blueprint("views", __name__)
 
 #### QUẢN LÝ SÁCH ####
 
+# Trang chính
+@views.route("/")
+@login_required
+def index():
+    return render_template("index.html")
+
 # API: Lấy danh sách sách
 @views.route("/books", methods=["GET"])
+@login_required
 def get_books():
     try:
         books = Book.query.filter_by(is_deleted=False).all()
@@ -37,6 +45,7 @@ def get_books():
 
 # API: Thêm sách mới
 @views.route("/add_book", methods=["POST"])
+@login_required
 def add_book():
     try:
         data = request.json
@@ -81,6 +90,7 @@ def add_book():
 
 # API: Tìm kiếm sách theo tiêu đề hoặc tác giả
 @views.route("/search_books", methods=["GET"])
+@login_required
 def search_books():
     try:
         query = request.args.get("query", "").strip()
@@ -112,6 +122,7 @@ def search_books():
 
 # API: Cập nhật thông tin sách
 @views.route("/update_book/<int:book_id>", methods=["PUT"])
+@login_required
 def update_book(book_id):
     try:
         book = Book.query.filter_by(id=book_id, is_deleted=False).first()
@@ -159,6 +170,7 @@ def update_book(book_id):
 
 # API: Xóa mềm sách
 @views.route("/books/<int:book_id>/delete", methods=["POST"])
+@login_required
 def delete_book(book_id):
     try:
         book = Book.query.get(book_id)
@@ -189,7 +201,22 @@ def delete_book(book_id):
         logger.error(f"Error deleting book ID {book_id}: {str(e)}")
         return jsonify({"message": f"Lỗi khi xóa sách: {str(e)}"}), 500
 
-# Trang chính
-@views.route("/")
-def index():
-    return render_template("index.html")
+# API: Lấy thông tin sách theo ID
+@views.route("/books/<int:book_id>/info", methods=["GET"])
+@login_required
+def get_book_info(book_id):
+    try:
+        book = Book.query.filter_by(id=book_id, is_deleted=False).first()
+        if not book:
+            logger.warning(f"Book ID {book_id} not found or deleted")
+            return jsonify({"message": "Sách không tồn tại hoặc đã bị xóa!"}), 404
+        book_info = {
+            "title": book.title,
+            "rental_price": book.rental_price,
+            "quantity": book.quantity
+        }
+        logger.info(f"Retrieved info for book ID {book_id}")
+        return jsonify(book_info), 200
+    except Exception as e:
+        logger.error(f"Error retrieving book info ID {book_id}: {str(e)}")
+        return jsonify({"message": f"Lỗi khi lấy thông tin sách: {str(e)}"}), 500

@@ -1,321 +1,285 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Sách</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
+{% extends "base.html" %}
+
+{% block title %}Quản lý Sách{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Quản Lý Sách</h2>
+
+<!-- Phần chứa thanh tìm kiếm + nút -->
+<div class="table-container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập tên sách hoặc tác giả để tìm kiếm...">
+        <button class="btn btn-primary mx-2" onclick="searchBooks()">🔍 Tìm kiếm</button>
+        <button class="btn btn-success" onclick="openAddPopup()">+ Thêm sách</button>
+    </div>
+
+    <!-- Bảng hiển thị sách -->
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên sách</th>
+                    <th>Tác giả</th>
+                    <th>Số lượng</th>
+                    <th>Giá thuê</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="bookTable">
+                <!-- Dữ liệu sẽ được thêm vào đây -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Popup thêm & sửa sách -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalLabel">Thêm sách mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="bookId">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Tên sách:</label>
+                    <input type="text" id="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Tác giả:</label>
+                    <input type="text" id="author" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Số lượng:</label>
+                    <input type="number" id="quantity" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="rental_price" class="form-label">Giá thuê:</label>
+                    <input type="number" step="0.01" id="rental_price" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveBook()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popup xác nhận xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc muốn xóa sách này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-container {
+        width: 90%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+    // Cấu hình toastr
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: 'toast-top-right',
+        timeOut: 5000
+    };
+
+    let selectedBookId = null;
+
+    // Tải danh sách sách
+    function loadBooks() {
+        fetch("/books")
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("bookTable");
+                tableBody.innerHTML = "";
+                if (data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không có sách nào.</td></tr>';
+                } else {
+                    data.forEach(book => {
+                        let row = tableBody.insertRow();
+                        row.innerHTML = `
+                            <td data-label="ID">${book.id}</td>
+                            <td data-label="Tên sách">${book.title}</td>
+                            <td data-label="Tác giả">${book.author}</td>
+                            <td data-label="Số lượng">${book.quantity}</td>
+                            <td data-label="Giá thuê">${book.rental_price}</td>
+                            <td data-label="Thao tác">
+                                <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(book)})'>✏️ Sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="openDeletePopup(${book.id})">🗑️ Xóa</button>
+                            </td>`;
+                    });
+                }
+                console.log("Loaded books:", data.length);
+            })
+            .catch(error => {
+                toastr.error('Lỗi khi tải danh sách sách: ' + error.message);
+                console.error("Error loading books:", error);
+            });
+    }
+
+    // Tìm kiếm sách
+    function searchBooks() {
+        let keyword = document.getElementById("searchInput").value.trim();
+        if (!keyword) {
+            loadBooks();
+            return;
         }
-        .table-container {
-            width: 90%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- MENU ĐIỀU HƯỚNG -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+        fetch(`/search_books?query=${encodeURIComponent(keyword)}`)
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.getElementById("bookTable");
+                tableBody.innerHTML = "";
+                if (data.message) {
+                    toastr.error(data.message);
+                    tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không tìm thấy sách nào.</td></tr>';
+                } else {
+                    data.forEach(book => {
+                        let row = tableBody.insertRow();
+                        row.innerHTML = `
+                            <td data-label="ID">${book.id}</td>
+                            <td data-label="Tên sách">${book.title}</td>
+                            <td data-label="Tác giả">${book.author}</td>
+                            <td data-label="Số lượng">${book.quantity}</td>
+                            <td data-label="Giá thuê">${book.rental_price}</td>
+                            <td data-label="Thao tác">
+                                <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(book)})'>✏️ Sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="openDeletePopup(${book.id})">🗑️ Xóa</button>
+                            </td>`;
+                    });
+                }
+                console.log("Search results:", data.length || data.message);
+            })
+            .catch(error => {
+                toastr.error('Lỗi khi tìm kiếm sách: ' + error.message);
+                console.error("Error searching books:", error);
+            });
+    }
 
-    <div class="container-fluid mt-4">
-        <h2 class="text-center fw-bold">Quản Lý Sách</h2>
+    // Mở popup thêm sách
+    function openAddPopup() {
+        document.getElementById("bookId").value = "";
+        document.getElementById("title").value = "";
+        document.getElementById("author").value = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("rental_price").value = "";
+        document.getElementById("bookModalLabel").innerText = "Thêm sách mới";
+        var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
+        myModal.show();
+    }
 
-        <!-- Phần chứa thanh tìm kiếm + nút -->
-        <div class="table-container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập tên sách hoặc tác giả để tìm kiếm...">
-                <button class="btn btn-primary mx-2" onclick="searchBooks()">🔍 Tìm kiếm</button>
-                <button class="btn btn-success" onclick="openAddPopup()">+ Thêm sách</button>
-            </div>
+    // Mở popup sửa sách
+    function openEditPopup(book) {
+        document.getElementById("bookId").value = book.id;
+        document.getElementById("title").value = book.title;
+        document.getElementById("author").value = book.author;
+        document.getElementById("quantity").value = book.quantity;
+        document.getElementById("rental_price").value = book.rental_price;
+        document.getElementById("bookModalLabel").innerText = "Chỉnh sửa sách";
+        var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
+        myModal.show();
+    }
 
-            <!-- Bảng hiển thị sách -->
-            <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên sách</th>
-                            <th>Tác giả</th>
-                            <th>Số lượng</th>
-                            <th>Giá thuê</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookTable">
-                        <!-- Dữ liệu sẽ được thêm vào đây -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    // Mở popup xác nhận xóa
+    function openDeletePopup(bookId) {
+        selectedBookId = bookId;
+        var myModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        myModal.show();
+    }
 
-    <!-- Popup thêm & sửa sách -->
-    <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bookModalLabel">Thêm sách mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="bookId">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Tên sách:</label>
-                        <input type="text" id="title" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="author" class="form-label">Tác giả:</label>
-                        <input type="text" id="author" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Số lượng:</label>
-                        <input type="number" id="quantity" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="rental_price" class="form-label">Giá thuê:</label>
-                        <input type="number" step="0.01" id="rental_price" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="saveBook()">Lưu</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Popup xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Xác nhận xóa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc muốn xóa sách này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        // Cấu hình toastr
-        toastr.options = {
-            closeButton: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            timeOut: 5000
+    // Lưu sách (thêm hoặc sửa)
+    function saveBook() {
+        let id = document.getElementById("bookId").value;
+        let bookData = {
+            title: document.getElementById("title").value.trim(),
+            author: document.getElementById("author").value.trim(),
+            quantity: parseInt(document.getElementById("quantity").value),
+            rental_price: parseFloat(document.getElementById("rental_price").value)
         };
 
-        let selectedBookId = null;
-
-        // Tải danh sách sách
-        function loadBooks() {
-            fetch("/books")
-                .then(response => response.json())
-                .then(data => {
-                    let tableBody = document.getElementById("bookTable");
-                    tableBody.innerHTML = "";
-                    if (data.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không có sách nào.</td></tr>';
-                    } else {
-                        data.forEach(book => {
-                            let row = tableBody.insertRow();
-                            row.innerHTML = `
-                                <td>${book.id}</td>
-                                <td>${book.title}</td>
-                                <td>${book.author}</td>
-                                <td>${book.quantity}</td>
-                                <td>${book.rental_price}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(book)})'>✏️ Sửa</button>
-                                    <button class="btn btn-danger btn-sm" onclick="openDeletePopup(${book.id})">🗑️ Xóa</button>
-                                </td>`;
-                        });
-                    }
-                    console.log("Loaded books:", data.length);
-                })
-                .catch(error => {
-                    toastr.error('Lỗi khi tải danh sách sách: ' + error.message);
-                    console.error("Error loading books:", error);
-                });
+        if (!bookData.title || !bookData.author || isNaN(bookData.quantity) || isNaN(bookData.rental_price)) {
+            toastr.error("Vui lòng điền đầy đủ và hợp lệ các trường!");
+            return;
         }
 
-        // Tìm kiếm sách
-        function searchBooks() {
-            let keyword = document.getElementById("searchInput").value.trim();
-            if (!keyword) {
+        let url = id ? `/update_book/${id}` : "/add_book";
+        let method = id ? "PUT" : "POST";
+
+        fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(bookData)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                toastr.success(data.message);
                 loadBooks();
-                return;
-            }
-            fetch(`/search_books?query=${encodeURIComponent(keyword)}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tableBody = document.getElementById("bookTable");
-                    tableBody.innerHTML = "";
-                    if (data.message) {
-                        toastr.error(data.message);
-                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không tìm thấy sách nào.</td></tr>';
-                    } else {
-                        data.forEach(book => {
-                            let row = tableBody.insertRow();
-                            row.innerHTML = `
-                                <td>${book.id}</td>
-                                <td>${book.title}</td>
-                                <td>${book.author}</td>
-                                <td>${book.quantity}</td>
-                                <td>${book.rental_price}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(book)})'>✏️ Sửa</button>
-                                    <button class="btn btn-danger btn-sm" onclick="openDeletePopup(${book.id})">🗑️ Xóa</button>
-                                </td>`;
-                        });
-                    }
-                    console.log("Search results:", data.length || data.message);
-                })
-                .catch(error => {
-                    toastr.error('Lỗi khi tìm kiếm sách: ' + error.message);
-                    console.error("Error searching books:", error);
-                });
-        }
-
-        // Mở popup thêm sách
-        function openAddPopup() {
-            document.getElementById("bookId").value = "";
-            document.getElementById("title").value = "";
-            document.getElementById("author").value = "";
-            document.getElementById("quantity").value = "";
-            document.getElementById("rental_price").value = "";
-            document.getElementById("bookModalLabel").innerText = "Thêm sách mới";
-            var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
-            myModal.show();
-        }
-
-        // Mở popup sửa sách
-        function openEditPopup(book) {
-            document.getElementById("bookId").value = book.id;
-            document.getElementById("title").value = book.title;
-            document.getElementById("author").value = book.author;
-            document.getElementById("quantity").value = book.quantity;
-            document.getElementById("rental_price").value = book.rental_price;
-            document.getElementById("bookModalLabel").innerText = "Chỉnh sửa sách";
-            var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
-            myModal.show();
-        }
-
-        // Mở popup xác nhận xóa
-        function openDeletePopup(bookId) {
-            selectedBookId = bookId;
-            var myModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-            myModal.show();
-        }
-
-        // Lưu sách (thêm hoặc sửa)
-        function saveBook() {
-            let id = document.getElementById("bookId").value;
-            let bookData = {
-                title: document.getElementById("title").value.trim(),
-                author: document.getElementById("author").value.trim(),
-                quantity: parseInt(document.getElementById("quantity").value),
-                rental_price: parseFloat(document.getElementById("rental_price").value)
-            };
-
-            if (!bookData.title || !bookData.author || isNaN(bookData.quantity) || isNaN(bookData.rental_price)) {
-                toastr.error("Vui lòng điền đầy đủ và hợp lệ các trường!");
-                return;
-            }
-
-            let url = id ? `/update_book/${id}` : "/add_book";
-            let method = id ? "PUT" : "POST";
-
-            fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(bookData)
+                bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
+                console.log("Saved book:", data);
             })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.message); });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    toastr.success(data.message);
-                    loadBooks();
-                    bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
-                    console.log("Saved book:", data);
-                })
-                .catch(error => {
-                    toastr.error(error.message);
-                    console.error("Error saving book:", error);
-                });
-        }
+            .catch(error => {
+                toastr.error(error.message);
+                console.error("Error saving book:", error);
+            });
+    }
 
-        // Xóa sách
-        document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
-            fetch(`/books/${selectedBookId}/delete`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({})
+    // Xóa sách
+    document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
+        fetch(`/books/${selectedBookId}/delete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        console.error("Delete error:", err.message);
+                        throw new Error(err.message);
+                    });
+                }
+                return response.json();
             })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => {
-                            console.error("Delete error:", err.message);
-                            throw new Error(err.message);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    toastr.success(data.message);
-                    loadBooks();
-                    bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
-                    console.log("Deleted book ID:", selectedBookId);
-                })
-                .catch(error => {
-                    toastr.error(error.message);
-                    console.error("Error deleting book:", error);
-                });
-        });
+            .then(data => {
+                toastr.success(data.message);
+                loadBooks();
+                bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                console.log("Deleted book ID:", selectedBookId);
+            })
+            .catch(error => {
+                toastr.error(error.message);
+                console.error("Error deleting book:", error);
+            });
+    });
 
-        // Tải sách khi trang được load
-        document.addEventListener("DOMContentLoaded", loadBooks);
-    </script>
-</body>
-</html>
+    // Tải sách khi trang được load
+    document.addEventListener("DOMContentLoaded", loadBooks);
+</script>
+{% endblock %}

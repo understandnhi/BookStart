@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
+from flask_login import login_required
 from models import db, Customer, Rental
 import logging
 
@@ -16,11 +17,13 @@ customer_views = Blueprint('customer_views', __name__)
 
 # API hiển thị trang quản lý khách hàng
 @customer_views.route('/manage_customers')
+@login_required
 def manage_customers():
     return render_template('manage_customers.html')
 
 # API lấy danh sách khách hàng
 @customer_views.route('/customers', methods=['GET'])
+@login_required
 def get_customers():
     try:
         customers = Customer.query.filter_by(is_deleted=False).all()
@@ -38,6 +41,7 @@ def get_customers():
 
 # API lấy thông tin một khách hàng cụ thể
 @customer_views.route('/customer/<int:id>', methods=['GET'])
+@login_required
 def get_customer(id):
     try:
         customer = Customer.query.filter_by(id=id, is_deleted=False).first()
@@ -55,6 +59,7 @@ def get_customer(id):
 
 # API tìm kiếm khách hàng theo tên hoặc số điện thoại
 @customer_views.route('/search_customer', methods=['GET'])
+@login_required
 def search_customer():
     try:
         query = request.args.get('query', '').strip()
@@ -81,12 +86,18 @@ def search_customer():
 
 # API thêm khách hàng mới
 @customer_views.route('/add_customer', methods=['POST'])
+@login_required
 def add_customer():
     try:
         data = request.get_json()
         if not data or 'name' not in data or 'phone' not in data:
             logger.warning("Invalid customer data provided")
             return jsonify({'message': 'Vui lòng cung cấp tên và số điện thoại!'}), 400
+
+        # Kiểm tra định dạng số điện thoại (10 chữ số)
+        if not data['phone'].isdigit() or len(data['phone']) != 10:
+            logger.warning(f"Invalid phone number format: {data['phone']}")
+            return jsonify({'message': 'Số điện thoại phải có 10 chữ số!'}), 400
 
         # Kiểm tra số điện thoại đã tồn tại
         existing_customer = Customer.query.filter_by(phone=data['phone'], is_deleted=False).first()
@@ -109,6 +120,7 @@ def add_customer():
 
 # API cập nhật thông tin khách hàng
 @customer_views.route('/update_customer/<int:id>', methods=['PUT'])
+@login_required
 def update_customer(id):
     try:
         customer = Customer.query.filter_by(id=id, is_deleted=False).first()
@@ -121,9 +133,12 @@ def update_customer(id):
             logger.warning("No update data provided")
             return jsonify({'message': 'Không có dữ liệu cập nhật!'}), 400
 
-        # Kiểm tra số điện thoại mới nếu được cung cấp
+        # Kiểm tra định dạng số điện thoại nếu được cung cấp
         new_phone = data.get('phone', customer.phone)
         if new_phone != customer.phone:
+            if not new_phone.isdigit() or len(new_phone) != 10:
+                logger.warning(f"Invalid phone number format: {new_phone}")
+                return jsonify({'message': 'Số điện thoại phải có 10 chữ số!'}), 400
             existing_customer = Customer.query.filter_by(phone=new_phone, is_deleted=False).first()
             if existing_customer:
                 logger.warning(f"Phone number {new_phone} already in use")
@@ -141,6 +156,7 @@ def update_customer(id):
 
 # API xóa mềm khách hàng
 @customer_views.route('/customers/<int:id>/delete', methods=['POST'])
+@login_required
 def delete_customer(id):
     try:
         customer = Customer.query.get(id)

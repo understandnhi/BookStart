@@ -1,289 +1,247 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Khách hàng</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>
-        body { background-color: #f8f9fa; }
-        .table-container {
-            width: 90%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- MENU ĐIỀU HƯỚNG -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <div class="container-fluid mt-4">
-        <h2 class="text-center fw-bold">Quản Lý Khách Hàng</h2>
-        <div class="table-container">
-            <div class="d-flex justify-content-between mb-3">
-                <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập tên hoặc số điện thoại để tìm kiếm...">
-                <div>
-                    <button class="btn btn-primary me-2" onclick="searchCustomers()">🔍 Tìm kiếm</button>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="openAddPopup()">+ Thêm khách hàng</button>
+{% block title %}Quản lý Khách hàng{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Quản Lý Khách Hàng</h2>
+<div class="table-container">
+    <div class="d-flex justify-content-between mb-3">
+        <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập tên hoặc số điện thoại để tìm kiếm...">
+        <div>
+            <button class="btn btn-primary me-2" onclick="searchCustomers()">🔍 Tìm kiếm</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#customerModal" onclick="openAddPopup()">+ Thêm khách hàng</button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Số điện thoại</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="customerTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- POP UP THÊM/SỬA -->
+<div class="modal fade" id="customerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Thêm khách hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="customerId">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tên:</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Số điện thoại:</label>
+                    <input type="text" id="phone" class="form-control" required>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên</th>
-                            <th>Số điện thoại</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customerTable"></tbody>
-                </table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="saveCustomer()">Lưu</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- POP UP THÊM/SỬA -->
-    <div class="modal fade" id="customerModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Thêm khách hàng</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="customerId">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Tên:</label>
-                        <input type="text" id="name" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phone" class="form-label">Số điện thoại:</label>
-                        <input type="text" id="phone" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="saveCustomer()">Lưu</button>
-                </div>
+<!-- POP UP XÁC NHẬN XÓA -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa khách hàng này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- POP UP XÁC NHẬN XÓA -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Xác nhận xóa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa khách hàng này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
+    .table-container {
+        width: 90%;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        // Cấu hình toastr
-        toastr.options = {
-            closeButton: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            timeOut: 5000
-        };
+<script>
+    let selectedCustomerId = null;
 
-        let selectedCustomerId = null;
-
-        // Tải danh sách khách hàng
-        function loadCustomers() {
-            fetch("/customers")
-                .then(response => response.json())
-                .then(data => {
-                    renderTable(data);
-                    console.log("Loaded customers:", data.length || data.message);
-                })
-                .catch(error => {
-                    toastr.error('Lỗi khi tải danh sách khách hàng: ' + error.message);
-                    console.error("Error loading customers:", error);
-                });
-        }
-
-        // Hiển thị bảng khách hàng
-        function renderTable(data) {
-            let tableBody = document.getElementById("customerTable");
-            tableBody.innerHTML = "";
-            if (data.message) {
-                tableBody.innerHTML = `<tr><td colspan="4" class="text-center">${data.message}</td></tr>`;
-                return;
-            }
-            data.forEach(customer => {
-                tableBody.innerHTML += `<tr>
-                    <td>${customer.id}</td>
-                    <td>${customer.name}</td>
-                    <td>${customer.phone}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(customer)})'>✏️ Sửa</button>
-                        <button class="btn btn-danger btn-sm" onclick="confirmDelete(${customer.id})">🗑️ Xóa</button>
-                    </td>
-                </tr>`;
+    // Tải danh sách khách hàng
+    function loadCustomers() {
+        fetch("/customers")
+            .then(response => response.json())
+            .then(data => {
+                renderTable(data);
+                console.log("Loaded customers:", data.length || data.message);
+            })
+            .catch(error => {
+                toastr.error('Lỗi khi tải danh sách khách hàng: ' + error.message);
+                console.error("Error loading customers:", error);
             });
+    }
+
+    // Hiển thị bảng khách hàng
+    function renderTable(data) {
+        let tableBody = document.getElementById("customerTable");
+        tableBody.innerHTML = "";
+        if (data.message) {
+            tableBody.innerHTML = `<tr><td colspan="4" class="text-center">${data.message}</td></tr>`;
+            return;
+        }
+        data.forEach(customer => {
+            tableBody.innerHTML += `<tr>
+                <td data-label="ID">${customer.id}</td>
+                <td data-label="Tên">${customer.name}</td>
+                <td data-label="Số điện thoại">${customer.phone}</td>
+                <td data-label="Thao tác">
+                    <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(customer)})'>✏️ Sửa</button>
+                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(${customer.id})">🗑️ Xóa</button>
+                </td>
+            </tr>`;
+        });
+    }
+
+    // Tìm kiếm khách hàng
+    function searchCustomers() {
+        let query = document.getElementById("searchInput").value.trim();
+        if (!query) {
+            loadCustomers();
+            return;
+        }
+        fetch(`/search_customer?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    toastr.error(data.message);
+                    renderTable({ message: 'Không tìm thấy khách hàng!' });
+                } else {
+                    renderTable(data);
+                }
+                console.log("Search results:", data.length || data.message);
+            })
+            .catch(error => {
+                toastr.error('Lỗi khi tìm kiếm khách hàng: ' + error.message);
+                console.error("Error searching customers:", error);
+            });
+    }
+
+    // Mở popup thêm khách hàng
+    function openAddPopup() {
+        document.getElementById("modalTitle").innerText = "Thêm khách hàng";
+        document.getElementById("customerId").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("phone").value = "";
+    }
+
+    // Mở popup sửa khách hàng
+    function openEditPopup(customer) {
+        document.getElementById("modalTitle").innerText = "Sửa khách hàng";
+        document.getElementById("customerId").value = customer.id;
+        document.getElementById("name").value = customer.name;
+        document.getElementById("phone").value = customer.phone;
+        new bootstrap.Modal(document.getElementById('customerModal')).show();
+    }
+
+    // Xác nhận xóa
+    function confirmDelete(id) {
+        selectedCustomerId = id;
+        new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+    }
+
+    // Lưu khách hàng
+    function saveCustomer() {
+        let id = document.getElementById("customerId").value;
+        let name = document.getElementById("name").value.trim();
+        let phone = document.getElementById("phone").value.trim();
+        if (!name || !phone) {
+            toastr.error("Vui lòng nhập đầy đủ tên và số điện thoại!");
+            return;
+        }
+        if (!/^\d{10}$/.test(phone)) {
+            toastr.error("Số điện thoại phải có 10 chữ số!");
+            return;
         }
 
-        // Tìm kiếm khách hàng
-        function searchCustomers() {
-            let query = document.getElementById("searchInput").value.trim();
-            if (!query) {
+        let data = { name, phone };
+        let url = id ? `/update_customer/${id}` : "/add_customer";
+        let method = id ? "PUT" : "POST";
+
+        fetch(url, {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                toastr.success(data.message);
                 loadCustomers();
-                return;
-            }
-            fetch(`/search_customer?query=${encodeURIComponent(query)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        toastr.error(data.message);
-                        renderTable({ message: 'Không tìm thấy khách hàng!' });
-                    } else {
-                        renderTable(data);
-                    }
-                    console.log("Search results:", data.length || data.message);
-                })
-                .catch(error => {
-                    toastr.error('Lỗi khi tìm kiếm khách hàng: ' + error.message);
-                    console.error("Error searching customers:", error);
-                });
-        }
+                bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
+                console.log("Saved customer:", data);
+            })
+            .catch(error => {
+                toastr.error(error.message);
+                console.error("Error saving customer:", error);
+            });
+    }
 
-        // Mở popup thêm khách hàng
-        function openAddPopup() {
-            document.getElementById("modalTitle").innerText = "Thêm khách hàng";
-            document.getElementById("customerId").value = "";
-            document.getElementById("name").value = "";
-            document.getElementById("phone").value = "";
-        }
-
-        // Mở popup sửa khách hàng
-        function openEditPopup(customer) {
-            document.getElementById("modalTitle").innerText = "Sửa khách hàng";
-            document.getElementById("customerId").value = customer.id;
-            document.getElementById("name").value = customer.name;
-            document.getElementById("phone").value = customer.phone;
-            new bootstrap.Modal(document.getElementById('customerModal')).show();
-        }
-
-        // Xác nhận xóa
-        function confirmDelete(id) {
-            selectedCustomerId = id;
-            new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
-        }
-
-        // Lưu khách hàng
-        function saveCustomer() {
-            let id = document.getElementById("customerId").value;
-            let name = document.getElementById("name").value.trim();
-            let phone = document.getElementById("phone").value.trim();
-            if (!name || !phone) {
-                toastr.error("Vui lòng nhập đầy đủ tên và số điện thoại!");
-                return;
-            }
-            if (!/^\d{10}$/.test(phone)) {
-                toastr.error("Số điện thoại phải có 10 chữ số!");
-                return;
-            }
-
-            let data = { name, phone };
-            let url = id ? `/update_customer/${id}` : "/add_customer";
-            let method = id ? "PUT" : "POST";
-
-            fetch(url, {
-                method: method,
+    // Xóa khách hàng
+    document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
+        if (selectedCustomerId !== null) {
+            fetch(`/customers/${selectedCustomerId}/delete`, {
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                body: JSON.stringify({})
             })
                 .then(response => {
                     if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.message); });
+                        return response.json().then(err => {
+                            console.error("Delete error:", err.message);
+                            throw new Error(err.message);
+                        });
                     }
                     return response.json();
                 })
                 .then(data => {
                     toastr.success(data.message);
                     loadCustomers();
-                    bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
-                    console.log("Saved customer:", data);
+                    bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+                    console.log("Deleted customer ID:", selectedCustomerId);
                 })
                 .catch(error => {
                     toastr.error(error.message);
-                    console.error("Error saving customer:", error);
+                    console.error("Error deleting customer:", error);
                 });
+            selectedCustomerId = null;
         }
+    });
 
-        // Xóa khách hàng
-        document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
-            if (selectedCustomerId !== null) {
-                fetch(`/customers/${selectedCustomerId}/delete`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({})
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.json().then(err => {
-                                console.error("Delete error:", err.message);
-                                throw new Error(err.message);
-                            });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        toastr.success(data.message);
-                        loadCustomers();
-                        bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
-                        console.log("Deleted customer ID:", selectedCustomerId);
-                    })
-                    .catch(error => {
-                        toastr.error(error.message);
-                        console.error("Error deleting customer:", error);
-                    });
-                selectedCustomerId = null;
-            }
-        });
-
-        // Tải danh sách khách hàng khi trang được load
-        document.addEventListener("DOMContentLoaded", loadCustomers);
-    </script>
-</body>
-</html>
+    // Tải danh sách khách hàng khi trang được load
+    document.addEventListener("DOMContentLoaded", loadCustomers);
+</script>
+{% endblock %}

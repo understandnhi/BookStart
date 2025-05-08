@@ -1,15 +1,17 @@
-
-# models.py
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 db = SQLAlchemy()
 
-# Bảng Users (Nhân viên nhà sách)
+# Bảng Users (Nhân viên nhà sách và chủ tiệm)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=True)
+    role = db.Column(db.String(20), nullable=False, default='staff')  # admin hoặc staff
+    is_active = db.Column(db.Boolean, default=True, nullable=False)  # Trạng thái tài khoản
 
 # Bảng Customers (Khách hàng thuê sách)
 class Customer(db.Model):

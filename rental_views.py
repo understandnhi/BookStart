@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, render_template
+from flask_login import login_required
 from models import db, Rental, RentalDetail, Book, Customer
 from datetime import datetime
 from dateutil import parser
@@ -19,11 +20,13 @@ rental_views = Blueprint('rental_views', __name__)
 
 # API hiển thị trang tạo đơn thuê
 @rental_views.route('/add_rentals')
+@login_required
 def add_rentals():
     return render_template('add_rentals.html')
 
 # API lấy thông tin sách theo ID (dùng để hiển thị tên sách, giá thuê)
 @rental_views.route('/books/<int:book_id>/info', methods=['GET'])
+@login_required
 def get_book_info(book_id):
     try:
         book = Book.query.filter_by(id=book_id, is_deleted=False).first()
@@ -44,6 +47,7 @@ def get_book_info(book_id):
 
 # API tạo đơn thuê mới
 @rental_views.route('/rentals', methods=['POST'])
+@login_required
 def create_rental():
     data = request.get_json()
 
@@ -140,11 +144,13 @@ def create_rental():
 
 # API hiển thị trang quản lý đơn thuê
 @rental_views.route('/manage_rentals')
+@login_required
 def manage_rentals():
     return render_template('manage_rentals.html')
 
 # API hiển thị danh sách đơn thuê
 @rental_views.route('/rentals', methods=['GET'])
+@login_required
 def get_all_rentals():
     try:
         # Lấy các đơn thuê có total_price > 0 và khách hàng chưa xóa
@@ -211,6 +217,7 @@ def get_all_rentals():
 
 # Tìm đơn thuê theo số điện thoại
 @rental_views.route('/rentals/search', methods=['GET'])
+@login_required
 def search_rentals():
     try:
         phone = request.args.get('phone')
@@ -272,6 +279,7 @@ def search_rentals():
 
 # Cập nhật trạng thái đơn thuê và hoàn trả sách
 @rental_views.route('/rentals/<int:rental_id>/complete', methods=['POST'])
+@login_required
 def complete_rental(rental_id):
     try:
         rental = Rental.query.get(rental_id)
@@ -336,6 +344,7 @@ def complete_rental(rental_id):
 
 # API lấy chi tiết đơn thuê
 @rental_views.route('/rentals/<int:rental_id>/details', methods=['GET'])
+@login_required
 def get_rental_details(rental_id):
     try:
         details = RentalDetail.query.join(Book).filter(
