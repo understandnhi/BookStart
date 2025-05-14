@@ -1,310 +1,225 @@
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Sách</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .table-container {
-            width: 90%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- MENU ĐIỀU HƯỚNG -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid mt-4">
-        <h2 class="text-center fw-bold">Quản Lý Sách</h2>
-
-        <!-- Phần chứa thanh tìm kiếm + nút -->
-        <div class="table-container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <input type="text" id="searchInput" class="form-control w-50" placeholder="Nhập tên sách hoặc tác giả để tìm kiếm...">
-                <button class="btn btn-primary mx-2" onclick="searchBooks()">🔍 Tìm kiếm</button>
-                <button class="btn btn-success" onclick="openAddPopup()">+ Thêm sách</button>
-            </div>
-
-            <!-- Bảng hiển thị sách -->
-            <div class="table-responsive">
-                <table class="table table-bordered text-center">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên sách</th>
-                            <th>Tác giả</th>
-                            <th>Số lượng</th>
-                            <th>Giá thuê</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bookTable">
-                        <!-- Dữ liệu sẽ được thêm vào đây -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Popup thêm & sửa sách -->
-    <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bookModalLabel">Thêm sách mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="bookId">
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Tên sách:</label>
-                        <input type="text" id="title" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="author" class="form-label">Tác giả:</label>
-                        <input type="text" id="author" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Số lượng:</label>
-                        <input type="number" id="quantity" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="rental_price" class="form-label">Giá thuê:</label>
-                        <input type="number" step="0.01" id="rental_price" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="saveBook()">Lưu</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Popup xác nhận xóa -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Xác nhận xóa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Bạn có chắc muốn xóa sách này không?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <title>Quản lý Sách - BOOKSTART</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">📚 BOOKSTART</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('user_views.manage_users') }}">👷 Quản lý Nhân viên</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('views.manage_books') }}">📖 Quản lý Sách</a></li>
+                    <li><a href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a></li>
+                    <li><a href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a></li>
+                    <li><a href="{{ url_for('views.logout') }}">🚪 Đăng xuất</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-8">
+        <h2 class="text-2xl font-bold mb-4">Quản Lý Sách</h2>
+        <div class="flex justify-between mb-4">
+            <input type="text" id="searchInput" class="p-2 border rounded" placeholder="🔍 Tìm kiếm">
+            <button id="addBookBtn" class="bg-blue-500 text-white p-2 rounded">+ Thêm sách</button>
+        </div>
+        <table class="w-full border-collapse border">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Tên sách</th>
+                    <th class="border p-2">Tác giả</th>
+                    <th class="border p-2">Số lượng</th>
+                    <th class="border p-2">Giá thuê</th>
+                    <th class="border p-2">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="bookTable"></tbody>
+        </table>
+    </main>
+
+    <!-- Modal thêm/sửa sách -->
+    <div id="bookModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-full max-w-md">
+            <h3 id="modalTitle" class="text-xl font-bold mb-4">Thêm sách mới</h3>
+            <form id="bookForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="title">Tên sách</label>
+                    <input type="text" id="title" name="title" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="author">Tác giả</label>
+                    <input type="text" id="author" name="author" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="quantity">Số lượng</label>
+                    <input type="number" id="quantity" name="quantity" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="rental_price">Giá thuê</label>
+                    <input type="number" step="0.01" id="rental_price" name="rental_price" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="closeModal" class="bg-gray-500 text-white p-2 rounded mr-2">Đóng</button>
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận xóa -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Xác nhận xóa</h3>
+            <p>Bạn có chắc muốn xóa sách này không?</p>
+            <div class="flex justify-end mt-4">
+                <button id="cancelDelete" class="bg-gray-500 text-white p-2 rounded mr-2">Hủy</button>
+                <button id="confirmDelete" class="bg-red-500 text-white p-2 rounded">Xóa</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Cấu hình toastr
-        toastr.options = {
-            closeButton: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            timeOut: 5000
-        };
+        let currentBookId = null;
 
-        let selectedBookId = null;
-
-        // Tải danh sách sách
+        // Load books
         function loadBooks() {
-            fetch("/books")
-                .then(response => response.json())
-                .then(data => {
-                    let tableBody = document.getElementById("bookTable");
-                    tableBody.innerHTML = "";
-                    if (data.length === 0) {
-                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không có sách nào.</td></tr>';
-                    } else {
-                        data.forEach(book => {
-                            let row = tableBody.insertRow();
-                            row.innerHTML = `
-                                <td>${book.id}</td>
-                                <td>${book.title}</td>
-                                <td>${book.author}</td>
-                                <td>${book.quantity}</td>
-                                <td>${book.rental_price}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(book)})'>✏️ Sửa</button>
-                                    <button class="btn btn-danger btn-sm" onclick="openDeletePopup(${book.id})">🗑️ Xóa</button>
-                                </td>`;
-                        });
-                    }
-                })
-                .catch(error => {
-                    toastr.error('Lỗi khi tải danh sách sách: ' + error.message);
+            $.get('/books', function(data) {
+                const tbody = $('#bookTable');
+                tbody.empty();
+                data.forEach(book => {
+                    tbody.append(`
+                        <tr>
+                            <td class="border p-2">${book.id}</td>
+                            <td class="border p-2">${book.title}</td>
+                            <td class="border p-2">${book.author}</td>
+                            <td class="border p-2">${book.quantity}</td>
+                            <td class="border p-2">${book.rental_price}</td>
+                            <td class="border p-2">
+                                <button onclick="editBook(${book.id}, '${book.title}', '${book.author}', ${book.quantity}, ${book.rental_price})" class="bg-yellow-500 text-white p-1 rounded">Sửa</button>
+                                <button onclick="showDeleteModal(${book.id})" class="bg-red-500 text-white p-1 rounded">Xóa</button>
+                            </td>
+                        </tr>
+                    `);
                 });
+            });
         }
 
-        // Tìm kiếm sách
-        function searchBooks() {
-            let keyword = document.getElementById("searchInput").value.trim();
-            if (!keyword) {
-                loadBooks();
-                return;
-            }
-            fetch(`/search_books?query=${encodeURIComponent(keyword)}`)
-                .then(response => response.json())
-                .then(data => {
-                    let tableBody = document.getElementById("bookTable");
-                    tableBody.innerHTML = "";
-                    if (data.message) {
-                        toastr.error(data.message);
-                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Không tìm thấy sách nào.</td></tr>';
-                    } else {
-                        data.forEach(book => {
-                            let row = tableBody.insertRow();
-                            row.innerHTML = `
-                                <td>${book.id}</td>
-                                <td>${book.title}</td>
-                                <td>${book.author}</td>
-                                <td>${book.quantity}</td>
-                                <td>${book.rental_price}</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm" onclick='openEditPopup(${JSON.stringify(book)})'>✏️ Sửa</button>
-                                    <button class="btn btn-danger btn-sm" onclick="openDeletePopup(${book.id})">🗑️ Xóa</button>
-                                </td>`;
-                        });
-                    }
-                })
-                .catch(error => {
-                    toastr.error('Lỗi khi tìm kiếm sách: ' + error.message);
-                });
-        }
-
-        // Mở popup thêm sách
-        function openAddPopup() {
-            document.getElementById("bookId").value = "";
-            document.getElementById("title").value = "";
-            document.getElementById("author").value = "";
-            document.getElementById("quantity").value = "";
-            document.getElementById("rental_price").value = "";
-            document.getElementById("bookModalLabel").innerText = "Thêm sách mới";
-            var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
-            myModal.show();
-        }
-
-        // Mở popup sửa sách
-        function openEditPopup(book) {
-            document.getElementById("bookId").value = book.id;
-            document.getElementById("title").value = book.title;
-            document.getElementById("author").value = book.author;
-            document.getElementById("quantity").value = book.quantity;
-            document.getElementById("rental_price").value = book.rental_price;
-            document.getElementById("bookModalLabel").innerText = "Chỉnh sửa sách";
-            var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
-            myModal.show();
-        }
-
-        // Mở popup xác nhận xóa
-        function openDeletePopup(bookId) {
-            selectedBookId = bookId;
-            var myModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-            myModal.show();
-        }
-
-        // Lưu sách (thêm hoặc sửa)
-        function saveBook() {
-            let id = document.getElementById("bookId").value;
-            let bookData = {
-                title: document.getElementById("title").value.trim(),
-                author: document.getElementById("author").value.trim(),
-                quantity: parseInt(document.getElementById("quantity").value),
-                rental_price: parseFloat(document.getElementById("rental_price").value)
-            };
-
-            if (!bookData.title || !bookData.author || isNaN(bookData.quantity) || isNaN(bookData.rental_price)) {
-                toastr.error("Vui lòng điền đầy đủ và hợp lệ các trường!");
-                return;
-            }
-
-            let url = id ? `/update_book/${id}` : "/add_book";
-            let method = id ? "PUT" : "POST";
-
-            fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(bookData)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.message); });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    toastr.success(data.message);
-                    loadBooks();
-                    bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
-                })
-                .catch(error => {
-                    toastr.error('Lỗi: ' + error.message);
-                });
-        }
-
-        // Xóa sách
-        document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
-            fetch(`/books/${selectedBookId}/delete`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({})
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.message); });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    toastr.success(data.message);
-                    loadBooks();
-                    bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
-                })
-                .catch(error => {
-                    toastr.error('Lỗi: ' + error.message);
-                });
+        // Show add/edit modal
+        $('#addBookBtn').click(function() {
+            $('#modalTitle').text('Thêm sách mới');
+            $('#bookForm')[0].reset();
+            currentBookId = null;
+            $('#bookModal').removeClass('hidden');
         });
 
-        // Tải sách khi trang được load
-        document.addEventListener("DOMContentLoaded", loadBooks);
+        function editBook(id, title, author, quantity, rental_price) {
+            $('#modalTitle').text('Sửa sách');
+            $('#title').val(title);
+            $('#author').val(author);
+            $('#quantity').val(quantity);
+            $('#rental_price').val(rental_price);
+            currentBookId = id;
+            $('#bookModal').removeClass('hidden');
+        }
+
+        // Close modal
+        $('#closeModal').click(function() {
+            $('#bookModal').addClass('hidden');
+        });
+
+        // Submit form
+        $('#bookForm').submit(function(e) {
+            e.preventDefault();
+            const data = {
+                title: $('#title').val(),
+                author: $('#author').val(),
+                quantity: parseInt($('#quantity').val()),
+                rental_price: parseFloat($('#rental_price').val())
+            };
+
+            const url = currentBookId ? `/update_book/${currentBookId}` : '/add_book';
+            const method = currentBookId ? 'PUT' : 'POST';
+
+            $.ajax({
+                url: url,
+                method: method,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    alert(response.message);
+                    $('#bookModal').addClass('hidden');
+                    loadBooks();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.message);
+                }
+            });
+        });
+
+        // Show delete modal
+        function showDeleteModal(id) {
+            currentBookId = id;
+            $('#deleteModal').removeClass('hidden');
+        }
+
+        // Cancel delete
+        $('#cancelDelete').click(function() {
+            $('#deleteModal').addClass('hidden');
+        });
+
+        // Confirm delete
+        $('#confirmDelete').click(function() {
+            $.ajax({
+                url: `/books/${currentBookId}/delete`,
+                method: 'POST',
+                success: function(response) {
+                    alert(response.message);
+                    $('#deleteModal').addClass('hidden');
+                    loadBooks();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.message);
+                }
+            });
+        });
+
+        // Search books
+        $('#searchInput').on('input', function() {
+            const query = $(this).val();
+            $.get(`/search_books?query=${query}`, function(data) {
+                const tbody = $('#bookTable');
+                tbody.empty();
+                data.forEach(book => {
+                    tbody.append(`
+                        <tr>
+                            <td class="border p-2">${book.id}</td>
+                            <td class="border p-2">${book.title}</td>
+                            <td class="border p-2">${book.author}</td>
+                            <td class="border p-2">${book.quantity}</td>
+                            <td class="border p-2">${book.rental_price}</td>
+                            <td class="border p-2">
+                                <button onclick="editBook(${book.id}, '${book.title}', '${book.author}', ${book.quantity}, ${book.rental_price})" class="bg-yellow-500 text-white p-1 rounded">Sửa</button>
+                                <button onclick="showDeleteModal(${book.id})" class="bg-red-500 text-white p-1 rounded">Xóa</button>
+                            </td>
+                        </tr>
+                    `);
+                });
+            });
+        });
+
+        // Initial load
+        loadBooks();
     </script>
 </body>
 </html>

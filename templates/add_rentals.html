@@ -1,307 +1,212 @@
+
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Đơn Thuê Sách</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Tạo Đơn thuê - BOOKSTART</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .book-entry td {
-            vertical-align: middle;
-        }
-        .error {
-            color: red;
-        }
-        .success {
-            color: green;
-        }
-        .total-price {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-        .remove-book {
-            padding: 5px 10px;
-        }
-        @media (max-width: 767.98px) {
-            .table {
-                display: block;
-            }
-            .table thead {
-                display: none;
-            }
-            .table tbody, .table tr {
-                display: block;
-                margin-bottom: 15px;
-                border: 1px solid #dee2e6;
-                border-radius: 5px;
-                padding: 10px;
-            }
-            .table td {
-                display: block;
-                text-align: left;
-                padding: 5px 10px;
-                border: none;
-            }
-            .table td:before {
-                content: attr(data-label);
-                font-weight: bold;
-                display: inline-block;
-                width: 100px;
-            }
-            .table td input, .table td span {
-                width: calc(100% - 110px);
-                display: inline-block;
-            }
-            .table td .remove-book {
-                width: auto;
-                margin-top: 10px;
-            }
-        }
-    </style>
 </head>
-<body>
-    <!-- Menu điều hướng -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
-                    </li>
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">📚 BOOKSTART</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('user_views.manage_users') }}">👷 Quản lý Nhân viên</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('views.manage_books') }}">📖 Quản lý Sách</a></li>
+                    <li><a href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a></li>
+                    <li><a href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a></li>
+                    <li><a href="{{ url_for('views.logout') }}">🚪 Đăng xuất</a></li>
                 </ul>
-            </div>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <div class="container mt-5">
-        <h2 class="mb-4">Tạo Đơn Thuê Sách</h2>
-
-        <!-- Form nhập thông tin khách hàng -->
-        <div class="card p-4 mb-3">
-            <h5>Thông tin khách hàng</h5>
-            <div class="mb-3">
-                <label class="form-label">Tên khách hàng</label>
-                <input type="text" id="customer_name" class="form-control" placeholder="Nhập tên khách hàng" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Số điện thoại</label>
-                <input type="text" id="customer_phone" class="form-control" placeholder="Nhập số điện thoại" required>
-            </div>
-        </div>
-
-        <!-- Form nhập thông tin sách thuê -->
-        <div class="card p-4 mb-3">
-            <h5>Danh sách sách thuê</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID sách</th>
-                            <th>Tên sách</th>
-                            <th class="d-none d-md-table-cell">Giá thuê</th>
-                            <th>Số lượng</th>
-                            <th class="d-none d-md-table-cell">Tổng tiền sách</th>
-                            <th>Ngày trả</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="books_list">
-                        <tr class="book-entry" data-index="0">
-                            <td data-label="ID sách"><input type="number" class="form-control book_id" placeholder="ID sách" min="1" required></td>
-                            <td data-label="Tên sách"><span class="book_title"></span></td>
-                            <td data-label="Giá thuê" class="d-none d-md-table-cell"><span class="rental_price"></span></td>
-                            <td data-label="Số lượng"><input type="number" class="form-control rental_quantity" placeholder="Số lượng" min="1" value="1" required></td>
-                            <td data-label="Tổng tiền sách" class="d-none d-md-table-cell"><span class="item_total">0</span> VND</td>
-                            <td data-label="Ngày trả"><input type="datetime-local" class="form-control return_due_date" required></td>
-                            <td data-label="Hành động">
-                                <button class="btn btn-danger btn-sm remove-book" title="Xóa">🗑️</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button id="add_book" class="btn btn-primary mt-2">Thêm sách</button>
-            <div class="mt-3 total-price">
-                Tổng tiền: <span id="total_price">0</span> VND
+    <main class="container mx-auto mt-8">
+        <h2 class="text-2xl font-bold mb-4">Tạo Đơn Thuê Sách</h2>
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h3 class="text-xl font-bold mb-4">Thông tin khách hàng</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 mb-2" for="customer_name">Tên khách hàng</label>
+                    <input type="text" id="customer_name" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2" for="customer_phone">Số điện thoại</label>
+                    <input type="text" id="customer_phone" class="w-full p-2 border rounded">
+                </div>
             </div>
         </div>
 
-        <!-- Nút gửi đơn thuê -->
-        <button id="submit_rental" class="btn btn-success">Tạo Đơn Thuê</button>
+        <div class="bg-white p-6 rounded-lg shadow mb-6">
+            <h3 class="text-xl font-bold mb-4">Danh sách sách thuê</h3>
+            <table class="w-full border-collapse border">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border p-2">ID sách</th>
+                        <th class="border p-2">Tên sách</th>
+                        <th class="border p-2">Giá thuê</th>
+                        <th class="border p-2">Số lượng</th>
+                        <th class="border p-2">Tổng tiền sách</th>
+                        <th class="border p-2">Ngày trả</th>
+                        <th class="border p-2">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="bookTable">
+                    <tr>
+                        <td class="border p-2"><input type="number" class="book_id w-full p-1"></td>
+                        <td class="border p-2 book_title"></td>
+                        <td class="border p-2 book_price"></td>
+                        <td class="border p-2"><input type="number" class="rental_quantity w-full p-1" value="1"></td>
+                        <td class="border p-2 book_total">0 VND</td>
+                        <td class="border p-2"><input type="datetime-local" class="return_due_date w-full p-1"></td>
+                        <td class="border p-2"><button class="removeBook bg-red-500 text-white p-1 rounded">🗑️</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button id="addBookBtn" class="bg-blue-500 text-white p-2 rounded mt-4">Thêm sách</button>
+            <div class="mt-4 text-right">
+                <span class="font-bold">Tổng tiền: <span id="totalPrice">0 VND</span></span>
+ millis            </div>
+        </div>
 
-        <!-- Thông báo kết quả -->
-        <div id="message" class="mt-3"></div>
-    </div>
+        <button id="createRentalBtn" class="bg-green-500 text-white p-2 rounded">Tạo Đơn Thuê</button>
+    </main>
 
     <script>
-        $(document).ready(function() {
-            let bookIndex = 0;
+        let books = [];
 
-            // Lấy thông tin sách khi nhập ID sách
-            $(document).on("input", ".book_id", function() {
-                const row = $(this).closest("tr");
-                const bookId = $(this).val();
-                const index = row.data("index");
-                const messageDiv = $("#message");
+        // Add new book row
+        $('#addBookBtn').click(function() {
+            $('#bookTable').append(`
+                <tr>
+                    <td class="border p-2"><input type="number" class="book_id w-full p-1"></td>
+                    <td class="border p-2 book_title"></td>
+                    <td class="border p-2 book_price"></td>
+                    <td class="border p-2"><input type="number" class="rental_quantity w-full p-1" value="1"></td>
+                    <td class="border p-2 book_total">0 VND</td>
+                    <td class="border p-2"><input type="datetime-local" class="return_due_date w-full p-1"></td>
+                    <td class="border p-2"><button class="removeBook bg-red-500 text-white p-1 rounded">🗑️</button></td>
+                </tr>
+            `);
+        });
 
-                if (!bookId) {
-                    row.find(".book_title").text("");
-                    row.find(".rental_price").text("");
-                    row.find(".item_total").text("0");
-                    updateTotalPrice();
-                    return;
-                }
+        // Remove book row
+        $(document).on('click', '.removeBook', function() {
+            $(this).closest('tr').remove();
+            updateTotal();
+        });
 
-                $.ajax({
-                    url: `/books/${bookId}/info`,
-                    type: "GET",
-                    success: function(data) {
-                        row.find(".book_title").text(data.title);
-                        row.find(".rental_price").text(`${data.rental_price} VND`);
-                        row.find(".rental_quantity").attr("max", data.quantity);
-                        updateItemTotal(row);
-                        messageDiv.html("");
-                    },
-                    error: function(xhr) {
-                        messageDiv.html(`<div class="alert alert-danger">${xhr.responseJSON.message}</div>`);
-                        row.find(".book_title").text("");
-                        row.find(".rental_price").text("");
-                        row.find(".item_total").text("0");
-                        updateTotalPrice();
-                    }
+        // Update book info on ID input
+        $(document).on('input', '.book_id', function() {
+            const row = $(this).closest('tr');
+            const bookId = $(this).val();
+            if (bookId) {
+                $.get(`/books/${bookId}/info`, function(data) {
+                    row.find('.book_title').text(data.title);
+                    row.find('.book_price').text(data.rental_price);
+                    updateRowTotal(row);
+                }).fail(function(xhr) {
+                    alert(xhr.responseJSON.message);
+                    row.find('.book_title').text('');
+                    row.find('.book_price').text('');
+                    row.find('.book_total').text('0 VND');
                 });
-            });
+            } else {
+                row.find('.book_title').text('');
+                row.find('.book_price').text('');
+                row.find('.book_total').text('0 VND');
+            }
+            updateTotal();
+        });
 
-            // Cập nhật tổng tiền cho một sách
-            function updateItemTotal(row) {
-                const quantity = parseInt(row.find(".rental_quantity").val()) || 0;
-                const priceText = row.find(".rental_price").text().replace(" VND", "");
-                const price = parseFloat(priceText) || 0;
-                const itemTotal = quantity * price;
-                row.find(".item_total").text(itemTotal);
-                updateTotalPrice();
+        // Update quantity
+        $(document).on('input', '.rental_quantity', function() {
+            const row = $(this).closest('tr');
+            updateRowTotal(row);
+            updateTotal();
+        });
+
+        // Update row total
+        function updateRowTotal(row) {
+            const price = parseFloat(row.find('.book_price').text()) || 0;
+            const quantity = parseInt(row.find('.rental_quantity').val()) || 0;
+            const total = price * quantity;
+            row.find('.book_total').text(total + ' VND');
+        }
+
+        // Update total price
+        function updateTotal() {
+            let total = 0;
+            $('.book_total').each(function() {
+                const value = parseFloat($(this).text()) || 0;
+                total += value;
+            });
+            $('#totalPrice').text(total + ' VND');
+        }
+
+        // Create rental
+        $('#createRentalBtn').click(function() {
+            const customer_name = $('#customer_name').val();
+            const customer_phone = $('#customer_phone').val();
+            if (!customer_name || !customer_phone) {
+                alert('Vui lòng nhập đầy đủ thông tin khách hàng!');
+                return;
             }
 
-            // Cập nhật tổng tiền toàn đơn
-            function updateTotalPrice() {
-                let total = 0;
-                $("#books_list tr").each(function() {
-                    const itemTotal = parseFloat($(this).find(".item_total").text()) || 0;
-                    total += itemTotal;
-                });
-                $("#total_price").text(total);
+            books = [];
+            let valid = true;
+            $('#bookTable tr').each(function() {
+                const book_id = $(this).find('.book_id').val();
+                const quantity = parseInt($(this).find('.rental_quantity').val());
+                const return_due_date = $(this).find('.return_due_date').val();
+                if (book_id && quantity && return_due_date) {
+                    books.push({
+                        book_id: parseInt(book_id),
+                        rental_quantity: quantity,
+                        return_due_date: return_due_date
+                    });
+                } else if (book_id || quantity || return_due_date) {
+                    valid = false;
+                }
+            });
+
+            if (!valid) {
+                alert('Vui lòng nhập đầy đủ thông tin sách!');
+                return;
             }
 
-            // Cập nhật tổng tiền khi thay đổi số lượng
-            $(document).on("input", ".rental_quantity", function() {
-                const row = $(this).closest("tr");
-                updateItemTotal(row);
-            });
+            if (books.length === 0) {
+                alert('Vui lòng thêm ít nhất một cuốn sách!');
+                return;
+            }
 
-            // Thêm dòng mới để nhập thông tin sách
-            $("#add_book").click(function() {
-                bookIndex++;
-                $("#books_list").append(`
-                    <tr class="book-entry" data-index="${bookIndex}">
-                        <td data-label="ID sách"><input type="number" class="form-control book_id" placeholder="ID sách" min="1" required></td>
-                        <td data-label="Tên sách"><span class="book_title"></span></td>
-                        <td data-label="Giá thuê" class="d-none d-md-table-cell"><span class="rental_price"></span></td>
-                        <td data-label="Số lượng"><input type="number" class="form-control rental_quantity" placeholder="Số lượng" min="1" value="1" required></td>
-                        <td data-label="Tổng tiền sách" class="d-none d-md-table-cell"><span class="item_total">0</span> VND</td>
-                        <td data-label="Ngày trả"><input type="datetime-local" class="form-control return_due_date" required></td>
-                        <td data-label="Hành động">
-                            <button class="btn btn-danger btn-sm remove-book" title="Xóa">🗑️</button>
-                        </td>
-                    </tr>
-                `);
-            });
+            const data = {
+                customer_name: customer_name,
+                customer_phone: customer_phone,
+                books: books
+            };
 
-            // Xóa dòng nhập sách
-            $(document).on("click", ".remove-book", function() {
-                $(this).closest("tr").remove();
-                updateTotalPrice();
-            });
-
-            // Gửi yêu cầu tạo đơn thuê
-            $("#submit_rental").click(function() {
-                const customer_name = $("#customer_name").val();
-                const customer_phone = $("#customer_phone").val();
-                const books = [];
-                let valid = true;
-
-                // Lấy danh sách sách thuê
-                $("#books_list tr").each(function() {
-                    const book_id = $(this).find(".book_id").val();
-                    const rental_quantity = $(this).find(".rental_quantity").val();
-                    const return_due_date = $(this).find(".return_due_date").val();
-                    const book_title = $(this).find(".book_title").text();
-
-                    if (book_id && rental_quantity && return_due_date && book_title) {
-                        books.push({
-                            book_id: parseInt(book_id),
-                            rental_quantity: parseInt(rental_quantity),
-                            return_due_date: new Date(return_due_date).toISOString()
-                        });
-                    } else {
-                        valid = false;
-                    }
-                });
-
-                if (!customer_name || !customer_phone || books.length === 0 || !valid) {
-                    $("#message").html('<div class="alert alert-danger">Vui lòng nhập đầy đủ thông tin và kiểm tra ID sách!</div>');
-                    return;
+            $.ajax({
+                url: '/rentals',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    alert(response.message);
+                    window.location.href = '/manage_rentals';
+                },
+                error: function(xhr) {
+                    alert(xhr.responseJSON.message);
                 }
-
-                // Gửi API tạo đơn thuê
-                $.ajax({
-                    url: "/rentals",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        customer_name: customer_name,
-                        customer_phone: customer_phone,
-                        books: books
-                    }),
-                    success: function(response) {
-                        $("#message").html(`<div class="alert alert-success">${response.message} ID: ${response.rental_id}, Tổng tiền: ${response.total_price} VND</div>`);
-                        // Reset form
-                        $("#customer_name").val("");
-                        $("#customer_phone").val("");
-                        $("#books_list").html(`
-                            <tr class="book-entry" data-index="0">
-                                <td data-label="ID sách"><input type="number" class="form-control book_id" placeholder="ID sách" min="1" required></td>
-                                <td data-label="Tên sách"><span class="book_title"></span></td>
-                                <td data-label="Giá thuê" class="d-none d-md-table-cell"><span class="rental_price"></span></td>
-                                <td data-label="Số lượng"><input type="number" class="form-control rental_quantity" placeholder="Số lượng" min="1" value="1" required></td>
-                                <td data-label="Tổng tiền sách" class="d-none d-md-table-cell"><span class="item_total">0</span> VND</td>
-                                <td data-label="Ngày trả"><input type="datetime-local" class="form-control return_due_date" required></td>
-                                <td data-label="Hành động">
-                                    <button class="btn btn-danger btn-sm remove-book" title="Xóa">🗑️</button>
-                                </td>
-                            </tr>
-                        `);
-                        $("#total_price").text("0");
-                        bookIndex = 0;
-                    },
-                    error: function(xhr) {
-                        $("#message").html(`<div class="alert alert-danger">${xhr.responseJSON.message}</div>`);
-                    }
-                });
             });
         });
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

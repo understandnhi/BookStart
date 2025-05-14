@@ -1,258 +1,179 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý đơn thuê</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- jQuery + Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .table-container {
-            width: 90%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đơn thuê - BOOKSTART</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body class="bg-light">
+<body class="bg-gray-100">
+    <header class="bg-blue-500 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">📚 BOOKSTART</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('user_views.manage_users') }}">👷 Quản lý Nhân viên</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('views.manage_books') }}">📖 Quản lý Sách</a></li>
+                    <li><a href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a></li>
+                    <li><a href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a></li>
+                    <li><a href="{{ url_for('views.logout') }}">🚪 Đăng xuất</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="#">📚 BOOKSTART</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('views.index') }}">📖 Quản lý Sách</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('customer_views.manage_customers') }}">👤 Quản lý Khách hàng</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('rental_views.manage_rentals') }}">📖 Quản lý đơn thuê</a>
-                </li>
-            </ul>
+    <main class="container mx-auto mt-8">
+        <h2 class="text-2xl font-bold mb-4">Quản lý đơn thuê sách</h2>
+        <div class="flex justify-between mb-4">
+            <input type="text" id="searchInput" class="p-2 border rounded" placeholder="Tìm kiếm theo số điện thoại...">
+            <a href="{{ url_for('rental_views.add_rentals') }}" class="bg-blue-500 text-white p-2 rounded">+ Thêm mới đơn thuê</a>
+        </div>
+        <table class="w-full border-collapse border">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Tên Khách hàng</th>
+                    <th class="border p-2">Ngày thuê</th>
+                    <th class="border p-2">Trạng thái</th>
+                    <th class="border p-2">Tổng tiền</th>
+                    <th class="border p-2">Ngày quá hạn</th>
+                    <th class="border p-2">Phí phạt</th>
+                    <th class="border p-2">Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="rentalTable"></tbody>
+        </table>
+    </main>
+
+    <!-- Modal chi tiết đơn thuê -->
+    <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg w-full max-w-2xl">
+            <h3 class="text-xl font-bold mb-4">Chi tiết đơn thuê</h3>
+            <table class="w-full border-collapse border">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border p-2">Tên sách</th>
+                        <th class="border p-2">Số lượng</th>
+                        <th class="border p-2">Ngày trả dự kiến</th>
+                        <th class="border p-2">Ngày trả</th>
+                        <th class="border p-2">Trạng thái</th>
+                        <th class="border p-2">Ngày quá hạn</th>
+                        <th class="border p-2">Phí phạt</th>
+                    </tr>
+                </thead>
+                <tbody id="detailsTable"></tbody>
+            </table>
+            <div class="flex justify-end mt-4">
+                <button id="closeDetailsModal" class="bg-gray-500 text-white p-2 rounded">Đóng</button>
+            </div>
         </div>
     </div>
-</nav>
 
-<div class="container mt-5">
-    <!-- Tiêu đề riêng biệt -->
-    <h2 class="text-center fw-bold mb-4">Quản lý đơn thuê sách</h2>
-
-    <div class="card shadow-sm rounded">
-        <div class="card-body">
-            <!-- Phần tìm kiếm -->
-            <div class="row mb-4">
-                <div class="col-12 col-md-6">
-                    <input type="text" id="search_phone" class="form-control" placeholder="Nhập số điện thoại khách hàng">
-                </div>
-                <div class="col-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-2 mt-md-0">
-                    <button class="btn btn-primary me-3" id="search_rentals">Tìm kiếm</button>
-                    <a href="{{ url_for('rental_views.add_rentals') }}" class="btn btn-success">+ Thêm mới đơn thuê</a>
-                </div>
-            </div>
-
-            <!-- Danh sách đơn thuê -->
-            <div class="table-responsive mt-4">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-light">
+    <script>
+        // Load rentals
+        function loadRentals() {
+            $.get('/rentals', function(data) {
+                const tbody = $('#rentalTable');
+                tbody.empty();
+                data.forEach(rental => {
+                    tbody.append(`
                         <tr>
-                            <th>ID</th>
-                            <th>Tên Khách hàng</th>
-                            <th>Ngày thuê</th>
-                            <th>Trạng thái</th>
-                            <th>Tổng tiền</th>
-                            <th>Ngày quá hạn</th>
-                            <th>Phí phạt</th>
-                            <th>Hành động</th>
+                            <td class="border p-2">${rental.id}</td>
+                            <td class="border p-2">${rental.customer_name}</td>
+                            <td class="border p-2">${rental.rental_date}</td>
+                            <td class="border p-2">${rental.status}</td>
+                            <td class="border p-2">${rental.total_price}</td>
+                            <td class="border p-2">${rental.late_days}</td>
+                            <td class="border p-2">${rental.late_fee}</td>
+                            <td class="border p-2">
+                                <button onclick="showDetails(${rental.id})" class="bg-blue-500 text-white p-1 rounded">Chi tiết</button>
+                                ${rental.status !== 'completed' ? `<button onclick="completeRental(${rental.id})" class="bg-green-500 text-white p-1 rounded">Hoàn tất</button>` : ''}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody id="rental_list">
-                        <!-- JS render ở đây -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal chi tiết đơn thuê -->
-<div class="modal fade" id="rentalDetailModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content shadow-sm">
-            <div class="modal-header bg-secondary text-white">
-                <h5 class="modal-title" id="modalTitle">Chi tiết đơn thuê</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Tên sách</th>
-                            <th>Số lượng</th>
-                            <th>Ngày trả dự kiến</th>
-                            <th>Ngày trả</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày quá hạn</th>
-                            <th>Phí phạt</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rental_detail_body"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- JavaScript xử lý -->
-<script>
-    // Hàm định dạng thời gian thành 15:16 05/05/2025
-    function formatDateTime(dateString) {
-        const date = new Date(dateString);
-        const hours = date.getHours().toString().padStart(2, '0');
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-        return `${hours}:${minutes} ${day}/${month}/${year}`;
-    }
-
-    // Hàm render danh sách đơn thuê
-    function renderRentals(data) {
-        let html = '';
-        data.forEach(r => {
-            if (r.total_price > 0) {
-                const rentalDate = formatDateTime(r.rental_date);
-                const isDisabled = r.status === 'completed' ? 'disabled' : '';
-
-                html += `
-                    <tr>
-                        <td>${r.id}</td>
-                        <td>${r.customer_name}</td>
-                        <td>${rentalDate}</td>
-                        <td>
-                            <select class="form-select form-select-sm status-select" data-id="${r.id}" ${isDisabled}>
-                                <option value="active" ${r.status === 'active' ? 'selected' : ''}>Active</option>
-                                <option value="overdue" ${r.status === 'overdue' ? 'selected' : ''}>Overdue</option>
-                                <option value="completed" ${r.status === 'completed' ? 'selected' : ''}>Completed</option>
-                            </select>
-                        </td>
-                        <td>${r.total_price.toFixed(2)}</td>
-                        <td>${r.late_days || 0}</td>
-                        <td>${r.late_fee ? r.late_fee.toFixed(2) : '0.00'}</td>
-                        <td>
-                            <button class="btn btn-info btn-sm view-details" data-id="${r.id}">
-                                Xem chi tiết
-                            </button>
-                        </td>
-                    </tr>`;
-            }
-        });
-        if (html === '') {
-            html = `<tr><td colspan="8" class="text-center">Không có đơn thuê nào.</td></tr>`;
-        }
-        $('#rental_list').html(html);
-    }
-
-    // Tự động hiển thị tất cả các đơn thuê khi trang tải xong
-    $(document).ready(function() {
-        $.get('/rentals', function(data) {
-            renderRentals(data);
-        });
-    });
-
-    // Tìm đơn thuê theo số điện thoại
-    $('#search_rentals').click(function() {
-        let phone = $('#search_phone').val();
-        $.get('/rentals/search?phone=' + phone, function(data) {
-            renderRentals(data);
-        });
-    });
-
-    // Cập nhật trạng thái đơn thuê
-    $(document).on('change', '.status-select', function() {
-        let rentalId = $(this).data('id');
-        let newStatus = $(this).val();
-        let currentStatus = $(this).find('option[selected]').val() || $(this).data('current-status');
-
-        // Ngăn thay đổi trạng thái từ completed
-        if (currentStatus === 'completed') {
-            alert('Không thể thay đổi trạng thái từ Completed về Active hoặc Overdue.');
-            $(this).val('completed');
-            return;
-        }
-
-        // Nếu chuyển sang completed, gọi API hoàn tất
-        if (newStatus === 'completed') {
-            $.post(`/rentals/${rentalId}/complete`, function(res) {
-                alert(res.message + (res.late_fee ? ` Phí phạt: ${res.late_fee} VNĐ` : ''));
-                $.get('/rentals', function(data) {
-                    renderRentals(data);
+                    `);
                 });
-            }).fail(function() {
-                alert('Lỗi khi hoàn tất đơn thuê.');
-                $(this).val(currentStatus);
             });
-        } else if (newStatus === 'overdue' && currentStatus === 'active') {
-            // Giả lập chuyển trạng thái sang overdue (thực tế backend tự động xử lý)
-            alert('Trạng thái Overdue sẽ được tự động cập nhật bởi hệ thống nếu sách quá hạn.');
-            $(this).val('active'); // Không cho phép chọn thủ công sang overdue
-        } else {
-            // Không cho phép chuyển từ overdue về active
-            alert('Không thể chuyển trạng thái từ Overdue về Active.');
-            $(this).val(currentStatus);
         }
 
-        // Cập nhật current-status để theo dõi
-        $(this).data('current-status', $(this).val());
-    });
-
-    // Xem chi tiết đơn thuê
-    $(document).on('click', '.view-details', function() {
-        let rentalId = $(this).data('id');
-        $.get(`/rentals/${rentalId}/details`, function(data) {
-            let html = '';
-            if (data.length === 0) {
-                html = `<tr><td colspan="7" class="text-center">Không có chi tiết đơn thuê.</td></tr>`;
-            } else {
-                data.forEach(item => {
-                    const returnDueDate = formatDateTime(item.return_due_date);
-                    const returnedDate = item.returned_date ? formatDateTime(item.returned_date) : '-';
-
-                    html += `
+        // Show rental details
+        function showDetails(rentalId) {
+            $.get(`/rentals/${rentalId}/details`, function(data) {
+                const tbody = $('#detailsTable');
+                tbody.empty();
+                data.forEach(detail => {
+                    tbody.append(`
                         <tr>
-                            <td>${item.book_title}</td>
-                            <td>${item.rental_quantity}</td>
-                            <td>${returnDueDate}</td>
-                            <td>${returnedDate}</td>
-                            <td>${item.is_returned ? 'Đã trả' : 'Chưa trả'}</td>
-                            <td>${item.late_days || 0}</td>
-                            <td>${item.late_fee ? item.late_fee.toFixed(2) : '0.00'}</td>
-                        </tr>`;
+                            <td class="border p-2">${detail.book_title}</td>
+                            <td class="border p-2">${detail.rental_quantity}</td>
+                            <td class="border p-2">${detail.return_due_date}</td>
+                            <td class="border p-2">${detail.returned_date || '-'}</td>
+                            <td class="border p-2">${detail.is_returned ? 'Đã trả' : 'Chưa trả'}</td>
+                            <td class="border p-2">${detail.late_days}</td>
+                            <td class="border p-2">${detail.late_fee}</td>
+                        </tr>
+                    `);
+                });
+                $('#detailsModal').removeClass('hidden');
+            });
+        }
+
+        // Complete rental
+        function completeRental(rentalId) {
+            if (confirm('Bạn có chắc chắn muốn hoàn tất đơn thuê này?')) {
+                $.ajax({
+                    url: `/rentals/${rentalId}/complete`,
+                    method: 'POST',
+                    success: function(response) {
+                        alert(response.message + ` Phí phạt: ${response.late_fee} VND`);
+                        loadRentals();
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message);
+                    }
                 });
             }
-            $('#rental_detail_body').html(html);
-            $('#rentalDetailModal').modal('show');
-        }).fail(function() {
-            alert('Lỗi khi tải chi tiết đơn thuê.');
-        });
-    });
-</script>
+        }
 
+        // Close details modal
+        $('#closeDetailsModal').click(function() {
+            $('#detailsModal').addClass('hidden');
+        });
+
+        // Search rentals
+        $('#searchInput').on('input', function() {
+            const phone = $(this).val();
+            $.get(`/rentals/search?phone=${phone}`, function(data) {
+                const tbody = $('#rentalTable');
+                tbody.empty();
+                data.forEach(rental => {
+                    tbody.append(`
+                        <tr>
+                            <td class="border p-2">${rental.id}</td>
+                            <td class="border p-2">${rental.customer_name}</td>
+                            <td class="border p-2">${rental.rental_date}</td>
+                            <td class="border p-2">${rental.status}</td>
+                            <td class="border p-2">${rental.total_price}</td>
+                            <td class="border p-2">${rental.late_days}</td>
+                            <td class="border p-2">${rental.late_fee}</td>
+                            <td class="border p-2">
+                                <button onclick="showDetails(${rental.id})" class="bg-blue-500 text-white p-1 rounded">Chi tiết</button>
+                                ${rental.status !== 'completed' ? `<button onclick="completeRental(${rental.id})" class="bg-green-500 text-white p-1 rounded">Hoàn tất</button>` : ''}
+                            </td>
+                        </tr>
+                    `);
+                });
+            });
+        });
+
+        // Initial load
+        loadRentals();
+    </script>
 </body>
 </html>

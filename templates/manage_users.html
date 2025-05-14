@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Khách hàng - BOOKSTART</title>
+    <title>Quản lý Nhân viên - BOOKSTART</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -28,36 +26,40 @@
     </header>
 
     <main class="container mx-auto mt-8">
-        <h2 class="text-2xl font-bold mb-4">Quản Lý Khách Hàng</h2>
+        <h2 class="text-2xl font-bold mb-4">Quản lý Nhân viên</h2>
         <div class="flex justify-between mb-4">
-            <input type="text" id="searchInput" class="p-2 border rounded" placeholder="🔍 Tìm kiếm">
-            <button id="addCustomerBtn" class="bg-blue-500 text-white p-2 rounded">+ Thêm khách hàng</button>
+            <input type="text" id="searchInput" class="p-2 border rounded" placeholder="Tìm kiếm nhân viên...">
+            <button id="addUserBtn" class="bg-blue-500 text-white p-2 rounded">+ Thêm nhân viên</button>
         </div>
         <table class="w-full border-collapse border">
             <thead>
                 <tr class="bg-gray-200">
                     <th class="border p-2">ID</th>
-                    <th class="border p-2">Tên</th>
-                    <th class="border p-2">Số điện thoại</th>
+                    <th class="border p-2">Tên đăng nhập</th>
+                    <th class="border p-2">Quyền Admin</th>
                     <th class="border p-2">Thao tác</th>
                 </tr>
             </thead>
-            <tbody id="customerTable"></tbody>
+            <tbody id="userTable"></tbody>
         </table>
     </main>
 
-    <!-- Modal thêm/sửa khách hàng -->
-    <div id="customerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <!-- Modal thêm/sửa nhân viên -->
+    <div id="userModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg w-full max-w-md">
-            <h3 id="modalTitle" class="text-xl font-bold mb-4">Thêm khách hàng</h3>
-            <form id="customerForm">
+            <h3 id="modalTitle" class="text-xl font-bold mb-4">Thêm nhân viên</h3>
+            <form id="userForm">
                 <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="name">Tên</label>
-                    <input type="text" id="name" name="name" class="w-full p-2 border rounded" required>
+                    <label class="block text-gray-700 mb-2" for="username">Tên đăng nhập</label>
+                    <input type="text" id="username" name="username" class="w-full p-2 border rounded" required>
                 </div>
                 <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="phone">Số điện thoại</label>
-                    <input type="text" id="phone" name="phone" class="w-full p-2 border rounded" required>
+                    <label class="block text-gray-700 mb-2" for="password">Mật khẩu</label>
+                    <input type="password" id="password" name="password" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2" for="is_admin">Quyền Admin</label>
+                    <input type="checkbox" id="is_admin" name="is_admin">
                 </div>
                 <div class="flex justify-end">
                     <button type="button" id="closeModal" class="bg-gray-500 text-white p-2 rounded mr-2">Đóng</button>
@@ -71,7 +73,7 @@
     <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
         <div class="bg-white p-6 rounded-lg w-full max-w-md">
             <h3 class="text-xl font-bold mb-4">Xác nhận xóa</h3>
-            <p>Bạn có chắc chắn muốn xóa khách hàng này không?</p>
+            <p>Bạn có chắc chắn muốn xóa nhân viên này không?</p>
             <div class="flex justify-end mt-4">
                 <button id="cancelDelete" class="bg-gray-500 text-white p-2 rounded mr-2">Hủy</button>
                 <button id="confirmDelete" class="bg-red-500 text-white p-2 rounded">Xóa</button>
@@ -80,22 +82,22 @@
     </div>
 
     <script>
-        let currentCustomerId = null;
+        let currentUserId = null;
 
-        // Load customers
-        function loadCustomers() {
-            $.get('/customers', function(data) {
-                const tbody = $('#customerTable');
+        // Load users
+        function loadUsers() {
+            $.get('/users', function(data) {
+                const tbody = $('#userTable');
                 tbody.empty();
-                data.forEach(customer => {
+                data.forEach(user => {
                     tbody.append(`
                         <tr>
-                            <td class="border p-2">${customer.id}</td>
-                            <td class="border p-2">${customer.name}</td>
-                            <td class="border p-2">${customer.phone}</td>
+                            <td class="border p-2">${user.id}</td>
+                            <td class="border p-2">${user.username}</td>
+                            <td class="border p-2">${user.is_admin ? 'Có' : 'Không'}</td>
                             <td class="border p-2">
-                                <button onclick="editCustomer(${customer.id}, '${customer.name}', '${customer.phone}')" class="bg-yellow-500 text-white p-1 rounded">Sửa</button>
-                                <button onclick="showDeleteModal(${customer.id})" class="bg-red-500 text-white p-1 rounded">Xóa</button>
+                                <button onclick="editUser(${user.id}, '${user.username}', ${user.is_admin})" class="bg-yellow-500 text-white p-1 rounded">Sửa</button>
+                                <button onclick="showDeleteModal(${user.id})" class="bg-red-500 text-white p-1 rounded">Xóa</button>
                             </td>
                         </tr>
                     `);
@@ -104,36 +106,38 @@
         }
 
         // Show add/edit modal
-        $('#addCustomerBtn').click(function() {
-            $('#modalTitle').text('Thêm khách hàng');
-            $('#customerForm')[0].reset();
-            currentCustomerId = null;
-            $('#customerModal').removeClass('hidden');
+        $('#addUserBtn').click(function() {
+            $('#modalTitle').text('Thêm nhân viên');
+            $('#userForm')[0].reset();
+            currentUserId = null;
+            $('#userModal').removeClass('hidden');
         });
 
-        function editCustomer(id, name, phone) {
-            $('#modalTitle').text('Sửa khách hàng');
-            $('#name').val(name);
-            $('#phone').val(phone);
-            currentCustomerId = id;
-            $('#customerModal').removeClass('hidden');
+        function editUser(id, username, is_admin) {
+            $('#modalTitle').text('Sửa nhân viên');
+            $('#username').val(username);
+            $('#password').val('');
+            $('#is_admin').prop('checked', is_admin);
+            currentUserId = id;
+            $('#userModal').removeClass('hidden');
         }
 
         // Close modal
         $('#closeModal').click(function() {
-            $('#customerModal').addClass('hidden');
+            $('#userModal').addClass('hidden');
         });
 
         // Submit form
-        $('#customerForm').submit(function(e) {
+        $('#userForm').submit(function(e) {
             e.preventDefault();
             const data = {
-                name: $('#name').val(),
-                phone: $('#phone').val()
+                username: $('#username').val(),
+                password: $('#password').val(),
+                is_admin: $('#is_admin').is(':checked')
             };
 
-            const url = currentCustomerId ? `/update_customer/${currentCustomerId}` : '/add_customer';
-            const method = currentCustomerId ? 'PUT' : 'POST';
+            const url = currentUserId ? `/update_user/${currentUserId}` : '/add_user';
+            const method = currentUserId ? 'PUT' : 'POST';
 
             $.ajax({
                 url: url,
@@ -142,8 +146,8 @@
                 data: JSON.stringify(data),
                 success: function(response) {
                     alert(response.message);
-                    $('#customerModal').addClass('hidden');
-                    loadCustomers();
+                    $('#userModal').addClass('hidden');
+                    loadUsers();
                 },
                 error: function(xhr) {
                     alert(xhr.responseJSON.message);
@@ -153,7 +157,7 @@
 
         // Show delete modal
         function showDeleteModal(id) {
-            currentCustomerId = id;
+            currentUserId = id;
             $('#deleteModal').removeClass('hidden');
         }
 
@@ -165,12 +169,12 @@
         // Confirm delete
         $('#confirmDelete').click(function() {
             $.ajax({
-                url: `/customers/${currentCustomerId}/delete`,
+                url: `/users/${currentUserId}/delete`,
                 method: 'POST',
                 success: function(response) {
                     alert(response.message);
                     $('#deleteModal').addClass('hidden');
-                    loadCustomers();
+                    loadUsers();
                 },
                 error: function(xhr) {
                     alert(xhr.responseJSON.message);
@@ -178,30 +182,17 @@
             });
         });
 
-        // Search customers
+        // Search users
         $('#searchInput').on('input', function() {
-            const query = $(this).val();
-            $.get(`/search_customer?query=${query}`, function(data) {
-                const tbody = $('#customerTable');
-                tbody.empty();
-                data.forEach(customer => {
-                    tbody.append(`
-                        <tr>
-                            <td class="border p-2">${customer.id}</td>
-                            <td class="border p-2">${customer.name}</td>
-                            <td class="border p-2">${customer.phone}</td>
-                            <td class="border p-2">
-                                <button onclick="editCustomer(${customer.id}, '${customer.name}', '${customer.phone}')" class="bg-yellow-500 text-white p-1 rounded">Sửa</button>
-                                <button onclick="showDeleteModal(${customer.id})" class="bg-red-500 text-white p-1 rounded">Xóa</button>
-                            </td>
-                        </tr>
-                    `);
-                });
+            const query = $(this).val().toLowerCase();
+            $('#userTable tr').each(function() {
+                const username = $(this).find('td:nth-child(2)').text().toLowerCase();
+                $(this).toggle(username.includes(query));
             });
         });
 
         // Initial load
-        loadCustomers();
+        loadUsers();
     </script>
 </body>
 </html>

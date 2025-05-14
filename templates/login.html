@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - BOOKSTART</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-6">📚 Đăng nhập</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('views.login') }}">
+            <div class="mb-4">
+                <label class="block text-gray-700 mb-2" for="username">Tên đăng nhập</label>
+                <input type="text" id="username" name="username" class="w-full p-2 border rounded" required>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="password">Mật khẩu</label>
+                <input type="password" id="password" name="password" class="w-full p-2 border rounded" required>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Đăng nhập</button>
+        </form>
+    </div>
+</body>
+</html>
