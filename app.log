@@ -710,3 +710,516 @@
 2025-05-15 04:16:22,029 - werkzeug - WARNING -  * Debugger is active!
 2025-05-15 04:16:22,041 - werkzeug - INFO -  * Debugger PIN: 109-655-122
 2025-05-15 04:16:25,670 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:16:25] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 04:17:42,338 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-15 04:17:42,338 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-15 04:17:42,340 - werkzeug - INFO -  * Restarting with stat
+2025-05-15 04:17:42,938 - werkzeug - WARNING -  * Debugger is active!
+2025-05-15 04:17:42,941 - werkzeug - INFO -  * Debugger PIN: 109-655-122
+2025-05-15 04:17:45,502 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:17:45] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 04:17:45,523 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:17:45] "GET /login HTTP/1.1" 200 -
+2025-05-15 04:17:55,178 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:17:55] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 04:17:55,194 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:17:55] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 04:17:55,355 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:17:55] "GET /users HTTP/1.1" 200 -
+2025-05-15 04:18:00,451 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:00] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 04:18:00,594 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:00] "GET /users HTTP/1.1" 200 -
+2025-05-15 04:18:01,251 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:01] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 04:18:01,358 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:01] "GET /books HTTP/1.1" 200 -
+2025-05-15 04:18:02,762 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:02] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 04:18:02,881 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:02] "GET /users HTTP/1.1" 200 -
+2025-05-15 04:18:03,968 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:03] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:18:04,090 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:04] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:18:05,240 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:05] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 04:18:05,480 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 04:18:05,480 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:05] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 04:18:07,567 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:07] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 04:18:07,580 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:18:07] "GET /login HTTP/1.1" 200 -
+2025-05-15 04:31:45,566 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:31:45] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 04:31:45,640 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:31:45] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 04:31:46,091 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:31:46] "GET /users HTTP/1.1" 200 -
+2025-05-15 04:31:55,468 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:31:55] "[31m[1mPOST /add_user HTTP/1.1[0m" 400 -
+2025-05-15 04:33:18,335 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:18] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 04:33:18,545 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:18] "GET /books HTTP/1.1" 200 -
+2025-05-15 04:33:22,694 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:22] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 04:33:23,107 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 04:33:23,109 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:23] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 04:33:23,951 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:23] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 04:33:40,281 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 04:33:40,283 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:40] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 04:33:41,555 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 04:33:41,555 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:41] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 04:33:51,490 - rental_views - ERROR - Insufficient quantity for book T\u1eaft \u0110èn: 13 available
+2025-05-15 04:33:51,493 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:33:51] "[31m[1mPOST /rentals HTTP/1.1[0m" 400 -
+2025-05-15 04:36:28,518 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:36:28] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:36:28,804 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:36:28] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:36:36,936 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:36:36] "[35m[1mPUT /update_customer/4 HTTP/1.1[0m" 500 -
+2025-05-15 04:36:44,695 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:36:44] "[35m[1mPUT /update_customer/4 HTTP/1.1[0m" 500 -
+2025-05-15 04:36:56,300 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:36:56] "[35m[1mPUT /update_customer/4 HTTP/1.1[0m" 500 -
+2025-05-15 04:37:02,036 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:02] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:37:02,258 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:02] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:37:04,103 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:04] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 04:37:04,247 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 04:37:04,249 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:04] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 04:37:12,696 - rental_views - INFO - Completed rental ID 5 with late fee 5000
+2025-05-15 04:37:12,696 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:12] "POST /rentals/5/complete HTTP/1.1" 200 -
+2025-05-15 04:37:14,867 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 04:37:14,867 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:14] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 04:37:20,673 - rental_views - DEBUG - Retrieved 2 details for rental ID 5
+2025-05-15 04:37:20,673 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:37:20] "GET /rentals/5/details HTTP/1.1" 200 -
+2025-05-15 04:39:24,754 - rental_views - DEBUG - Retrieved 2 details for rental ID 5
+2025-05-15 04:39:24,768 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:39:24] "GET /rentals/5/details HTTP/1.1" 200 -
+2025-05-15 04:39:50,806 - rental_views - DEBUG - Retrieved 2 details for rental ID 5
+2025-05-15 04:39:50,808 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:39:50] "GET /rentals/5/details HTTP/1.1" 200 -
+2025-05-15 04:41:12,477 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:12] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:41:13,109 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:13] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:41:18,620 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:18] "PUT /update_customer/4 HTTP/1.1" 200 -
+2025-05-15 04:41:20,267 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:20] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:41:38,024 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:38] "[35m[1mPUT /update_customer/4 HTTP/1.1[0m" 500 -
+2025-05-15 04:41:44,703 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:44] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:41:44,921 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:44] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:41:47,431 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:47] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 04:41:47,616 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:47] "GET /books HTTP/1.1" 200 -
+2025-05-15 04:41:51,591 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:51] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:41:51,844 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:51] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:41:54,033 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:54] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 04:41:54,190 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 04:41:54,191 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:54] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 04:41:58,148 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:58] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 04:41:58,303 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:41:58] "GET /customers HTTP/1.1" 200 -
+2025-05-15 04:42:41,913 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:42:41] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 04:42:42,158 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 04:42:42,165 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 04:42:42] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:16:09,420 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-15 13:16:09,423 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-15 13:16:09,425 - werkzeug - INFO -  * Restarting with stat
+2025-05-15 13:16:11,485 - werkzeug - WARNING -  * Debugger is active!
+2025-05-15 13:16:11,491 - werkzeug - INFO -  * Debugger PIN: 973-862-352
+2025-05-15 13:16:34,981 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:34] "[32mGET / HTTP/1.1[0m" 302 -
+2025-05-15 13:16:35,031 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:35] "GET /login HTTP/1.1" 200 -
+2025-05-15 13:16:37,899 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:37] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-15 13:16:42,402 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:42] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 13:16:42,481 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:42] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 13:16:42,747 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:42] "GET /users HTTP/1.1" 200 -
+2025-05-15 13:16:50,812 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:50] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:16:51,047 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:51] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:16:53,261 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:53] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:16:53,387 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:53] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:16:56,581 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:16:56] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:17:01,971 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 13:17:01,971 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:17:01] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:17:02,018 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:17:02] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:17:02,162 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 13:17:02,163 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:17:02] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:17:33,245 - rental_views - DEBUG - Retrieved 2 details for rental ID 4
+2025-05-15 13:17:33,246 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:17:33] "GET /rentals/4/details HTTP/1.1" 200 -
+2025-05-15 13:17:47,531 - rental_views - DEBUG - Retrieved 1 details for rental ID 3
+2025-05-15 13:17:47,531 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:17:47] "GET /rentals/3/details HTTP/1.1" 200 -
+2025-05-15 13:19:21,983 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:21] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:19:22,182 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:22] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:19:25,123 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:25] "POST /customers/4/delete HTTP/1.1" 200 -
+2025-05-15 13:19:26,480 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:26] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:19:34,222 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:34] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:19:34,328 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 13:19:34,328 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:34] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:19:35,872 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:35] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 13:19:57,427 - rental_views - DEBUG - Retrieved book info: ID 5, Title B\u1ed1 Già
+2025-05-15 13:19:57,429 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:57] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 13:19:59,777 - rental_views - DEBUG - Retrieved book info: ID 5, Title B\u1ed1 Già
+2025-05-15 13:19:59,777 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:19:59] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 13:20:06,994 - rental_views - ERROR - Error creating rental: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(sqlite3.IntegrityError) UNIQUE constraint failed: customer.phone
+[SQL: INSERT INTO customer (name, phone, is_deleted) VALUES (?, ?, ?)]
+[parameters: ('Jungkook', '0123456789', 0)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-05-15 13:20:06,994 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:20:06] "[35m[1mPOST /rentals HTTP/1.1[0m" 500 -
+2025-05-15 13:20:22,111 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:20:22] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:20:22,308 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:20:22] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:22:57,317 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-15 13:22:57,317 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-15 13:22:57,319 - werkzeug - INFO -  * Restarting with stat
+2025-05-15 13:22:58,040 - werkzeug - WARNING -  * Debugger is active!
+2025-05-15 13:22:58,045 - werkzeug - INFO -  * Debugger PIN: 973-862-352
+2025-05-15 13:23:00,351 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:23:00] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:23:02,616 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 13:23:02,616 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:23:02] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:23:06,084 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:23:06] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 13:23:17,202 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 13:23:17,202 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:23:17] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 13:23:18,860 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 13:23:18,860 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:23:18] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 13:23:23,201 - rental_views - ERROR - Error creating rental: (raised as a result of Query-invoked autoflush; consider using a session.no_autoflush block if this flush is occurring prematurely)
+(sqlite3.IntegrityError) UNIQUE constraint failed: customer.phone
+[SQL: INSERT INTO customer (name, phone, is_deleted) VALUES (?, ?, ?)]
+[parameters: ('Jungkook', '0123456789', 0)]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-05-15 13:23:23,202 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:23:23] "[35m[1mPOST /rentals HTTP/1.1[0m" 500 -
+2025-05-15 13:27:22,139 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-15 13:27:22,141 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-15 13:27:22,141 - werkzeug - INFO -  * Restarting with stat
+2025-05-15 13:27:22,701 - werkzeug - WARNING -  * Debugger is active!
+2025-05-15 13:27:22,708 - werkzeug - INFO -  * Debugger PIN: 973-862-352
+2025-05-15 13:27:24,933 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:24] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:27:27,705 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 13:27:27,713 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:27] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:27:27,851 - rental_views - INFO - Created rental ID 6 for customer Jungkook
+2025-05-15 13:27:27,853 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:27] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 13:27:29,760 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:29] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:27:29,869 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 13:27:29,869 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:29] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:27:34,798 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:34] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:27:34,939 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:34] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:27:43,898 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:43] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:27:43,983 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 13:27:43,983 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:27:43] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:28:12,119 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:12] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 13:28:12,165 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:12] "GET /login HTTP/1.1" 200 -
+2025-05-15 13:28:25,580 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:25] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 13:28:25,611 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:25] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 13:28:25,697 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:25] "GET /users HTTP/1.1" 200 -
+2025-05-15 13:28:52,803 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:52] "[35m[1mPOST /add_user HTTP/1.1[0m" 201 -
+2025-05-15 13:28:54,593 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:54] "GET /users HTTP/1.1" 200 -
+2025-05-15 13:28:57,818 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:57] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 13:28:57,833 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:28:57] "GET /login HTTP/1.1" 200 -
+2025-05-15 13:29:03,440 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:03] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 13:29:03,446 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:03] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 13:29:03,536 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:03] "GET /users HTTP/1.1" 200 -
+2025-05-15 13:29:39,707 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:39] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:29:39,786 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:39] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:29:45,840 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:45] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:29:45,918 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:45] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:29:48,790 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:48] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:29:48,859 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:48] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:29:57,649 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:57] "GET /search_books?query=t HTTP/1.1" 200 -
+2025-05-15 13:29:57,844 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:57] "[33mGET /search_books?query=to HTTP/1.1[0m" 404 -
+2025-05-15 13:29:57,990 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:57] "[33mGET /search_books?query=tô HTTP/1.1[0m" 404 -
+2025-05-15 13:29:58,163 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:29:58] "GET /search_books?query=t\u1ed1 HTTP/1.1" 200 -
+2025-05-15 13:30:03,437 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:03] "GET /search_books?query=t HTTP/1.1" 200 -
+2025-05-15 13:30:03,598 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:03] "[31m[1mGET /search_books?query= HTTP/1.1[0m" 400 -
+2025-05-15 13:30:05,249 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:05] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:30:05,342 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:05] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:30:06,714 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:06] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:30:06,807 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:06] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:30:12,391 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:12] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:30:12,466 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:12] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:30:14,782 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:14] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:30:14,850 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 13:30:14,852 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:14] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:30:16,482 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:16] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 13:30:19,364 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 13:30:19,364 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:19] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 13:30:23,908 - rental_views - DEBUG - Retrieved book info: ID 5, Title B\u1ed1 Già
+2025-05-15 13:30:23,910 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:23] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 13:30:27,334 - rental_views - DEBUG - Retrieved book info: ID 5, Title B\u1ed1 Già
+2025-05-15 13:30:27,334 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:27] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 13:30:35,333 - rental_views - ERROR - Insufficient quantity for book B\u1ed1 Già: 4 available
+2025-05-15 13:30:35,333 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:30:35] "[31m[1mPOST /rentals HTTP/1.1[0m" 400 -
+2025-05-15 13:31:01,362 - rental_views - INFO - Created rental ID 7 for customer Jungkook
+2025-05-15 13:31:01,363 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:01] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 13:31:02,867 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:02] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:31:03,024 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:31:03,025 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:03] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:31:08,755 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:08] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:31:08,842 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:08] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:31:13,829 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:13] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:31:13,899 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:31:13,901 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:13] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:31:16,621 - rental_views - DEBUG - Retrieved 1 details for rental ID 7
+2025-05-15 13:31:16,622 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:16] "GET /rentals/7/details HTTP/1.1" 200 -
+2025-05-15 13:31:51,659 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:51] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:31:51,732 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:51] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:31:56,343 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:56] "[31m[1mPOST /books/5/delete HTTP/1.1[0m" 400 -
+2025-05-15 13:31:59,570 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:31:59] "[31m[1mPOST /books/5/delete HTTP/1.1[0m" 400 -
+2025-05-15 13:32:03,644 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:03] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 13:32:03,724 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:03] "GET /customers HTTP/1.1" 200 -
+2025-05-15 13:32:18,611 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:18] "[31m[1mPOST /customers/5/delete HTTP/1.1[0m" 400 -
+2025-05-15 13:32:22,957 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:22] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:32:23,028 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:32:23,028 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:23] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:32:26,361 - rental_views - INFO - Completed rental ID 6 with late fee 0
+2025-05-15 13:32:26,361 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:26] "POST /rentals/6/complete HTTP/1.1" 200 -
+2025-05-15 13:32:28,150 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:32:28,151 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:28] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:32:30,526 - rental_views - INFO - Completed rental ID 7 with late fee 0
+2025-05-15 13:32:30,526 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:30] "POST /rentals/7/complete HTTP/1.1" 200 -
+2025-05-15 13:32:31,703 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:32:31,704 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:31] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:32:32,622 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:32] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 13:32:32,694 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:32] "GET /books HTTP/1.1" 200 -
+2025-05-15 13:32:40,421 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:40] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 13:32:40,496 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:32:40,496 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:40] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:32:43,838 - rental_views - INFO - Completed rental ID 3 with late fee 3000
+2025-05-15 13:32:43,839 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:43] "POST /rentals/3/complete HTTP/1.1" 200 -
+2025-05-15 13:32:45,964 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:32:45,966 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:45] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:32:49,272 - rental_views - INFO - Completed rental ID 4 with late fee 3000
+2025-05-15 13:32:49,272 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:49] "POST /rentals/4/complete HTTP/1.1" 200 -
+2025-05-15 13:32:50,303 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 13:32:50,304 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:50] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 13:32:52,598 - rental_views - DEBUG - Retrieved 1 details for rental ID 1
+2025-05-15 13:32:52,599 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:32:52] "GET /rentals/1/details HTTP/1.1" 200 -
+2025-05-15 13:35:13,082 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:35:13] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 13:35:13,099 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:35:13] "GET /login HTTP/1.1" 200 -
+2025-05-15 13:59:14,389 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 13:59:14] "GET /login HTTP/1.1" 200 -
+2025-05-15 14:00:12,700 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:12] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 14:00:12,707 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:12] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 14:00:12,819 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:12] "GET /users HTTP/1.1" 200 -
+2025-05-15 14:00:27,967 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:27] "[35m[1mPOST /add_user HTTP/1.1[0m" 201 -
+2025-05-15 14:00:29,644 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:29] "GET /users HTTP/1.1" 200 -
+2025-05-15 14:00:41,956 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:41] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:00:42,104 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:42] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:00:53,480 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:53] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 14:00:53,629 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:53] "GET /customers HTTP/1.1" 200 -
+2025-05-15 14:00:55,468 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:55] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:00:55,566 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:55] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:00:59,404 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:59] "GET /search_books?query=t HTTP/1.1" 200 -
+2025-05-15 14:00:59,740 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:59] "[33mGET /search_books?query=to HTTP/1.1[0m" 404 -
+2025-05-15 14:00:59,867 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:00:59] "[33mGET /search_books?query=tô HTTP/1.1[0m" 404 -
+2025-05-15 14:01:00,028 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:00] "GET /search_books?query=t\u1ed1 HTTP/1.1" 200 -
+2025-05-15 14:01:01,880 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:01] "GET /search_books?query=t HTTP/1.1" 200 -
+2025-05-15 14:01:02,067 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:02] "[31m[1mGET /search_books?query= HTTP/1.1[0m" 400 -
+2025-05-15 14:01:04,374 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:04] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 14:01:04,521 - rental_views - DEBUG - Retrieved 5 rentals
+2025-05-15 14:01:04,521 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:04] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 14:01:07,624 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:07] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 14:01:24,007 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 14:01:24,007 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:24] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 14:01:26,362 - rental_views - DEBUG - Retrieved book info: ID 1, Title T\u1eaft \u0110èn
+2025-05-15 14:01:26,365 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:26] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 14:01:33,449 - rental_views - INFO - Created rental ID 8 for customer V\u0169 Th\u1ecb H\u1ea3i
+2025-05-15 14:01:33,449 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:33] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 14:01:42,037 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:42] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 14:01:42,295 - rental_views - DEBUG - Retrieved 6 rentals
+2025-05-15 14:01:42,296 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:42] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 14:01:43,508 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:43] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:01:43,648 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:43] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:01:51,532 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:51] "[31m[1mPOST /books/1/delete HTTP/1.1[0m" 400 -
+2025-05-15 14:01:58,705 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:58] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 14:01:58,810 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:01:58] "GET /customers HTTP/1.1" 200 -
+2025-05-15 14:02:05,225 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:05] "[31m[1mPOST /customers/6/delete HTTP/1.1[0m" 400 -
+2025-05-15 14:02:10,519 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:10] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 14:02:10,701 - rental_views - DEBUG - Retrieved 6 rentals
+2025-05-15 14:02:10,701 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:10] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 14:02:15,331 - rental_views - INFO - Completed rental ID 1 with late fee 0
+2025-05-15 14:02:15,336 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:15] "POST /rentals/1/complete HTTP/1.1" 200 -
+2025-05-15 14:02:17,411 - rental_views - DEBUG - Retrieved 6 rentals
+2025-05-15 14:02:17,411 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:17] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 14:02:20,251 - rental_views - INFO - Completed rental ID 8 with late fee 0
+2025-05-15 14:02:20,259 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:20] "POST /rentals/8/complete HTTP/1.1" 200 -
+2025-05-15 14:02:21,452 - rental_views - DEBUG - Retrieved 6 rentals
+2025-05-15 14:02:21,452 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:21] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 14:02:24,144 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:24] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:02:24,274 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:24] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:02:29,981 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:29] "POST /books/1/delete HTTP/1.1" 200 -
+2025-05-15 14:02:31,366 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:02:31] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:03:05,601 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:05] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 14:03:05,769 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:05] "GET /users HTTP/1.1" 200 -
+2025-05-15 14:03:08,249 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:08] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 14:03:08,256 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:08] "GET /login HTTP/1.1" 200 -
+2025-05-15 14:03:15,462 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:15] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 14:03:15,469 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:15] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:03:15,625 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:03:15] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:07:34,067 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:07:34] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 14:07:34,195 - rental_views - DEBUG - Retrieved 6 rentals
+2025-05-15 14:07:34,195 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:07:34] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 14:07:36,237 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:07:36] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 14:07:48,791 - rental_views - WARNING - Book ID 1 not found or deleted
+2025-05-15 14:07:48,791 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:07:48] "[33mGET /books/1/info HTTP/1.1[0m" 404 -
+2025-05-15 14:07:52,432 - rental_views - DEBUG - Retrieved book info: ID 5, Title B\u1ed1 Già
+2025-05-15 14:07:52,432 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:07:52] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 14:07:55,931 - rental_views - DEBUG - Retrieved book info: ID 5, Title B\u1ed1 Già
+2025-05-15 14:07:55,932 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:07:55] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 14:08:02,169 - rental_views - ERROR - Insufficient quantity for book B\u1ed1 Già: 5 available
+2025-05-15 14:08:02,169 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:08:02] "[31m[1mPOST /rentals HTTP/1.1[0m" 400 -
+2025-05-15 14:09:45,338 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:09:45] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:09:45,533 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:09:45] "GET /books HTTP/1.1" 200 -
+2025-05-15 14:11:51,824 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:11:51] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 14:11:51,962 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 14:11:51] "GET /books HTTP/1.1" 200 -
+2025-05-15 17:23:59,436 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 17:23:59] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 17:23:59,895 - rental_views - DEBUG - Retrieved 6 rentals
+2025-05-15 17:23:59,895 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 17:23:59] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:22:03,537 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-15 23:22:03,537 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-15 23:22:03,538 - werkzeug - INFO -  * Restarting with stat
+2025-05-15 23:22:04,125 - werkzeug - WARNING -  * Debugger is active!
+2025-05-15 23:22:04,133 - werkzeug - INFO -  * Debugger PIN: 973-862-352
+2025-05-15 23:22:18,839 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:18] "[32mGET / HTTP/1.1[0m" 302 -
+2025-05-15 23:22:18,912 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:18] "GET /login HTTP/1.1" 200 -
+2025-05-15 23:22:19,776 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-15 23:22:25,581 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:25] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 23:22:25,623 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:25] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 23:22:25,772 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:25] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:22:38,221 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:38] "[35m[1mPOST /add_user HTTP/1.1[0m" 201 -
+2025-05-15 23:22:39,826 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:39] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:22:53,782 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:53] "[35m[1mPOST /add_user HTTP/1.1[0m" 201 -
+2025-05-15 23:22:55,428 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:55] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:22:57,697 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:57] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 23:22:57,921 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:22:57] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:24:44,048 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:24:44] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:24:45,923 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:24:45] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:25:11,044 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:25:11] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:25:12,545 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:25:12] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:25:46,623 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:25:46] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:25:47,805 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:25:47] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:26:16,890 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:26:16] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:26:17,938 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:26:17] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:26:42,985 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:26:42] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:26:44,047 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:26:44] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:27:20,097 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:27:20] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:27:21,076 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:27:21] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:28:31,821 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:28:31] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:28:32,936 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:28:32] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:29:15,585 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:29:15] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:29:17,147 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:29:17] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:29:34,660 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:29:34] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:29:35,521 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:29:35] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:30:26,645 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:30:26] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:30:27,798 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:30:27] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:32:04,939 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:04] "[32mGET /manage_books HTTP/1.1[0m" 302 -
+2025-05-15 23:32:04,953 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:04] "GET /login?next=/manage_books HTTP/1.1" 200 -
+2025-05-15 23:32:05,340 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-05-15 23:32:20,518 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:20] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 23:32:20,530 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:20] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 23:32:20,631 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:20] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:32:36,324 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:36] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 23:32:36,400 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:36] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:32:37,574 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:37] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 23:32:37,656 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:37] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:32:47,005 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:47] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 23:32:47,098 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:32:47] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:33:22,420 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:33:22] "[35m[1mPOST /add_book HTTP/1.1[0m" 201 -
+2025-05-15 23:33:29,436 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:33:29] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:33:51,097 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:33:51] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:33:51,298 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:33:51] "[33mGET /customers HTTP/1.1[0m" 404 -
+2025-05-15 23:33:59,029 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:33:59] "[35m[1mPOST /add_customer HTTP/1.1[0m" 201 -
+2025-05-15 23:34:00,332 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:00] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:34:38,679 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:38] "[35m[1mPOST /add_customer HTTP/1.1[0m" 201 -
+2025-05-15 23:34:40,545 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:40] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:34:53,228 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:53] "[35m[1mPOST /add_customer HTTP/1.1[0m" 201 -
+2025-05-15 23:34:54,422 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:54] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:34:59,508 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:59] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:34:59,606 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:34:59] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:35:01,074 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:01] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:35:03,821 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:03] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 23:35:04,245 - rental_views - DEBUG - Retrieved 0 rentals
+2025-05-15 23:35:04,245 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:04] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:35:07,452 - rental_views - DEBUG - Retrieved book info: ID 5, Title Totto-chan: Cô Bé Bên C\u1eeda S\u1ed5
+2025-05-15 23:35:07,454 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:07] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 23:35:11,442 - rental_views - DEBUG - Retrieved book info: ID 5, Title Totto-chan: Cô Bé Bên C\u1eeda S\u1ed5
+2025-05-15 23:35:11,443 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:11] "GET /books/5/info HTTP/1.1" 200 -
+2025-05-15 23:35:12,809 - rental_views - DEBUG - Retrieved book info: ID 2, Title \u0110\u1eafc Nhân Tâm
+2025-05-15 23:35:12,809 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:12] "GET /books/2/info HTTP/1.1" 200 -
+2025-05-15 23:35:13,732 - rental_views - DEBUG - Retrieved book info: ID 1, Title B\u1ed1 Già
+2025-05-15 23:35:13,732 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:13] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 23:35:16,642 - rental_views - DEBUG - Retrieved book info: ID 1, Title B\u1ed1 Già
+2025-05-15 23:35:16,643 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:16] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 23:35:20,594 - rental_views - INFO - Created rental ID 1 for customer Ng\u1ecdc Hi\u1ec3u Nhi
+2025-05-15 23:35:20,594 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:20] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 23:35:22,187 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:22] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:35:22,247 - rental_views - DEBUG - Retrieved 1 rentals
+2025-05-15 23:35:22,248 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:22] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:35:23,703 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:23] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 23:35:41,129 - rental_views - DEBUG - Retrieved book info: ID 1, Title B\u1ed1 Già
+2025-05-15 23:35:41,130 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:41] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 23:35:43,605 - rental_views - DEBUG - Retrieved book info: ID 1, Title B\u1ed1 Già
+2025-05-15 23:35:43,606 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:35:43] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 23:36:00,058 - rental_views - ERROR - Insufficient quantity for book B\u1ed1 Già: 9 available
+2025-05-15 23:36:00,059 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:00] "[31m[1mPOST /rentals HTTP/1.1[0m" 400 -
+2025-05-15 23:36:12,971 - rental_views - DEBUG - Retrieved book info: ID 3, Title Harry Potter và Hòn \u0110á Phù Th\u1ee7y
+2025-05-15 23:36:12,972 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:12] "GET /books/3/info HTTP/1.1" 200 -
+2025-05-15 23:36:16,065 - rental_views - DEBUG - Retrieved book info: ID 3, Title Harry Potter và Hòn \u0110á Phù Th\u1ee7y
+2025-05-15 23:36:16,065 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:16] "GET /books/3/info HTTP/1.1" 200 -
+2025-05-15 23:36:24,102 - rental_views - INFO - Created rental ID 2 for customer V\u0169 Th\u1ecb H\u1ea3i
+2025-05-15 23:36:24,102 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:24] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 23:36:25,531 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:25] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:36:25,648 - rental_views - DEBUG - Retrieved 2 rentals
+2025-05-15 23:36:25,655 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:25] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:36:28,595 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:28] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:36:28,674 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:28] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:36:45,654 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:45] "[35m[1mPOST /add_customer HTTP/1.1[0m" 201 -
+2025-05-15 23:36:47,562 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:47] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:36:49,628 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:49] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:36:49,955 - rental_views - DEBUG - Retrieved 2 rentals
+2025-05-15 23:36:49,955 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:49] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:36:54,433 - rental_views - INFO - Completed rental ID 1 with late fee 0
+2025-05-15 23:36:54,434 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:54] "POST /rentals/1/complete HTTP/1.1" 200 -
+2025-05-15 23:36:56,316 - rental_views - DEBUG - Retrieved 2 rentals
+2025-05-15 23:36:56,317 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:56] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:36:57,875 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:36:57] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 23:37:17,462 - rental_views - DEBUG - Retrieved book info: ID 1, Title B\u1ed1 Già
+2025-05-15 23:37:17,462 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:17] "GET /books/1/info HTTP/1.1" 200 -
+2025-05-15 23:37:17,639 - rental_views - DEBUG - Retrieved book info: ID 10, Title Sherlock Holmes: Tuy\u1ec3n T\u1eadp Truy\u1ec7n Ng\u1eafn
+2025-05-15 23:37:17,640 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:17] "GET /books/10/info HTTP/1.1" 200 -
+2025-05-15 23:37:18,772 - rental_views - DEBUG - Retrieved book info: ID 10, Title Sherlock Holmes: Tuy\u1ec3n T\u1eadp Truy\u1ec7n Ng\u1eafn
+2025-05-15 23:37:18,772 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:18] "GET /books/10/info HTTP/1.1" 200 -
+2025-05-15 23:37:25,582 - rental_views - INFO - Created rental ID 3 for customer Nguy\u1ec5n V\u0103n A
+2025-05-15 23:37:25,583 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:25] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 23:37:27,219 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:27] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:37:27,327 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 23:37:27,328 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:27] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:37:34,506 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:34] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 23:37:34,602 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:34] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:37:39,498 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:39] "[31m[1mPOST /books/10/delete HTTP/1.1[0m" 400 -
+2025-05-15 23:37:48,750 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:48] "GET /search_books?query=T HTTP/1.1" 200 -
+2025-05-15 23:37:48,887 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:48] "[33mGET /search_books?query=Ta HTTP/1.1[0m" 404 -
+2025-05-15 23:37:49,236 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:49] "GET /search_books?query=Tâ HTTP/1.1" 200 -
+2025-05-15 23:37:52,018 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:52] "[31m[1mGET /search_books?query= HTTP/1.1[0m" 400 -
+2025-05-15 23:37:52,023 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:52] "GET /search_books?query=Tâ HTTP/1.1" 200 -
+2025-05-15 23:37:55,550 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:55] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:37:55,640 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:55] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:37:58,255 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:58] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:37:58,332 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 23:37:58,334 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:37:58] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:38:01,786 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:01] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:38:01,874 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:01] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:38:05,048 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:05] "[31m[1mPOST /customers/4/delete HTTP/1.1[0m" 400 -
+2025-05-15 23:38:13,788 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:13] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:38:13,851 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 23:38:13,852 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:13] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:38:19,657 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:19] "GET /add_rentals HTTP/1.1" 200 -
+2025-05-15 23:38:47,353 - rental_views - DEBUG - Retrieved book info: ID 2, Title \u0110\u1eafc Nhân Tâm
+2025-05-15 23:38:47,353 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:47] "GET /books/2/info HTTP/1.1" 200 -
+2025-05-15 23:38:49,790 - rental_views - DEBUG - Retrieved book info: ID 2, Title \u0110\u1eafc Nhân Tâm
+2025-05-15 23:38:49,790 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:49] "GET /books/2/info HTTP/1.1" 200 -
+2025-05-15 23:38:55,080 - rental_views - DEBUG - Retrieved book info: ID 6, Title Không Gia \u0110ình
+2025-05-15 23:38:55,080 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:55] "GET /books/6/info HTTP/1.1" 200 -
+2025-05-15 23:38:58,784 - rental_views - DEBUG - Retrieved book info: ID 6, Title Không Gia \u0110ình
+2025-05-15 23:38:58,785 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:38:58] "GET /books/6/info HTTP/1.1" 200 -
+2025-05-15 23:39:09,933 - rental_views - INFO - Created rental ID 4 for customer Nông Bích Ng\u1ecdc
+2025-05-15 23:39:09,933 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:09] "[35m[1mPOST /rentals HTTP/1.1[0m" 201 -
+2025-05-15 23:39:11,390 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:11] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:39:11,513 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 23:39:11,513 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:11] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:39:16,641 - rental_views - INFO - Completed rental ID 3 with late fee 0
+2025-05-15 23:39:16,641 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:16] "POST /rentals/3/complete HTTP/1.1" 200 -
+2025-05-15 23:39:18,594 - rental_views - DEBUG - Retrieved 4 rentals
+2025-05-15 23:39:18,595 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:18] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:39:20,252 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:20] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:39:20,335 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:20] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:39:25,258 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:25] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 23:39:25,340 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:25] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:39:27,540 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:27] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 23:39:27,628 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:27] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:39:31,489 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:31] "POST /books/10/delete HTTP/1.1" 200 -
+2025-05-15 23:39:35,282 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:35] "GET /books HTTP/1.1" 200 -
+2025-05-15 23:39:38,505 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:38] "GET /manage_customers HTTP/1.1" 200 -
+2025-05-15 23:39:38,577 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:38] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:39:41,350 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:41] "POST /customers/4/delete HTTP/1.1" 200 -
+2025-05-15 23:39:42,678 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:42] "GET /customers HTTP/1.1" 200 -
+2025-05-15 23:39:43,818 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:43] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:39:43,909 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 23:39:43,909 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:43] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:39:45,167 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:45] "GET /manage_users HTTP/1.1" 200 -
+2025-05-15 23:39:45,221 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:45] "GET /users HTTP/1.1" 200 -
+2025-05-15 23:39:47,000 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:47] "GET /manage_rentals HTTP/1.1" 200 -
+2025-05-15 23:39:47,069 - rental_views - DEBUG - Retrieved 3 rentals
+2025-05-15 23:39:47,071 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:47] "GET /rentals HTTP/1.1" 200 -
+2025-05-15 23:39:54,641 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:54] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-05-15 23:39:54,656 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:39:54] "GET /login HTTP/1.1" 200 -
+2025-05-15 23:40:04,865 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:40:04] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-05-15 23:40:04,872 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:40:04] "GET /manage_books HTTP/1.1" 200 -
+2025-05-15 23:40:04,942 - werkzeug - INFO - 127.0.0.1 - - [15/May/2025 23:40:04] "GET /books HTTP/1.1" 200 -
